@@ -60,22 +60,21 @@ def fig_q1() -> None:
     rows = q1_rows()
     if not rows:
         return
-    fig, ax = plt.subplots(figsize=(8, 0.42 * len(rows) + 1.4))
+    fig, ax = plt.subplots(figsize=(9.5, 0.44 * len(rows) + 1.6))
     y = np.arange(len(rows))[::-1]
     for yi, (lab, m, lo, hi, ok) in zip(y, rows):
         ax.plot([100 * lo, 100 * hi], [yi, yi], color=C[0], lw=2, solid_capstyle="round")
         ax.plot(100 * m, yi, "o", color=C[0], ms=8, mec=SURFACE, mew=2)
-        ax.text(100 * hi + 0.6, yi, f"{100 * m:.1f}%", va="center", fontsize=9, color=INK2)
+        ax.text(100 * hi + 1.2, yi, f"{100 * m:.1f}%", va="center", fontsize=9, color=INK2)
     ax.axvline(10, color=INK2, lw=1, ls=(0, (4, 3)))
-    ax.text(10.2, len(rows) - 0.45, "pass threshold: 10% of headroom", fontsize=9, color=INK2, va="bottom")
+    ax.text(10.6, len(rows) - 0.5, "pass threshold (10%)", fontsize=9, color=INK2, va="bottom")
     ax.axvline(0, color=INK2, lw=0.8)
     ax.set_yticks(y, [r[0] for r in rows])
-    ax.set_ylim(-0.6, len(rows) - 0.2)
+    ax.set_ylim(-0.6, len(rows) - 0.1)
     ax.grid(axis="y", visible=False)
-    ax.set_xlabel("held-out gain of the second-order model over the additive one, as % of headroom (95% CI)")
-    ax.set_title("Q1: second-order gain is detectable in most test beds but below the pass threshold")
-    fig.tight_layout()
-    fig.savefig(OUT / "q1_summary.png", dpi=200)
+    ax.set_xlabel("held-out gain of the second-order model, % of headroom (95% CI)")
+    ax.set_title("Q1: second-order gain over the additive model")
+    fig.savefig(OUT / "q1_summary.png", dpi=200, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -116,18 +115,16 @@ def fig_q2(tag: str) -> None:
     names = {"4": "4x4 tiles (56 px)", "3": "3x3 tiles (70 px)", "2": "2x2 tiles (112 px)"}
     for i, g in enumerate(("4", "3", "2")):
         r2 = np.array(d["spectrum"][g]["rho2"])
-        k = np.arange(1, len(r2) + 1)
-        ax.plot(k, np.clip(r2, 1e-4, None), color=C[i], label=names[g])
-        ax.text(1.05, r2[0] + (0.02 if i != 1 else -0.045), names[g].split(" (")[0], color=INK2, fontsize=9)
+        ax.plot(np.arange(1, len(r2) + 1), r2, color=C[i], label=names[g])
     null = max(d["spectrum"][g]["rho2_null_p99"] for g in ("4", "3", "2"))
     ax.axhline(null, color=INK2, lw=1, ls=(0, (4, 3)))
-    ax.text(1.05, null * 1.25, "null (environment from another image)", fontsize=9, color=INK2)
+    ax.text(1.05, null + 0.025, "null: environment taken from another image", fontsize=9, color=INK2)
     ax.set_xscale("log")
-    ax.set_yscale("log")
-    ax.set_xlabel("direction rank k")
+    ax.set_ylim(-0.03, 1.0)
+    ax.set_xlabel("direction rank k (of 384)")
     ax.set_ylabel("held-out canonical correlation, squared")
-    ax.set_title("Q2: the relevance spectrum has no gap")
-    ax.legend(loc="lower left")
+    ax.set_title("Q2: the relevance spectrum decays smoothly, with no gap")
+    ax.legend(loc="upper right", title="block size")
     fig.tight_layout()
     fig.savefig(OUT / "q2_spectrum.png", dpi=200)
     plt.close(fig)
@@ -135,7 +132,7 @@ def fig_q2(tag: str) -> None:
     rows = d["decode"]["4"]
     ks = sorted({int(k.split("@")[1]) for k in rows if "@" in k})
     fig, axes = plt.subplots(1, 3, figsize=(11, 3.6), sharex=True)
-    panels = [("emotion_acc", "evoked emotion (accuracy)"), ("brightness_r2", "brightness (R2)"), ("colorfulness_r2", "colourfulness (R2)")]
+    panels = [("emotion_acc", "evoked emotion (accuracy)"), ("brightness_r2", "brightness ($R^2$)"), ("colorfulness_r2", "colourfulness ($R^2$)")]
     series = [("relevant", "most relevant (top CCA)"), ("pca", "highest variance (PCA)"), ("random", "random"), ("irrelevant", "least relevant")]
     for ax, (m, title) in zip(axes, panels):
         for i, (s, lab) in enumerate(series):
@@ -147,8 +144,9 @@ def fig_q2(tag: str) -> None:
         ax.set_title(title)
         ax.set_xlabel("directions kept per tile")
     axes[0].legend(loc="upper left", fontsize=8)
-    axes[0].text(ks[0], rows["full"]["emotion_acc"], " all 384", fontsize=8, color=INK2, va="bottom")
-    fig.suptitle("Q2: keeping only k directions per 56-px tile, then decoding linearly", x=0.01, ha="left", fontweight="bold")
+    for ax, (m, _) in zip(axes, panels):
+        ax.text(ks[-1], rows["full"][m], "all 384 ", fontsize=8, color=INK2, va="top", ha="right")
+    fig.suptitle("Q2: keep only k directions per 56-px tile, then decode linearly", x=0.01, ha="left", fontweight="bold")
     fig.tight_layout()
     fig.savefig(OUT / "q2_truncation.png", dpi=200)
     plt.close(fig)

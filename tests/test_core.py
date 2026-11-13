@@ -36,7 +36,7 @@ def test_permutation_and_padding_invariance():
 
 def test_second_order_models_start_at_the_additive_model():
     x, m = _batch()
-    for kind in ("poly2", "poly3", "pair"):
+    for kind in ("poly2", "poly3", "pair", "gate"):
         torch.manual_seed(1)
         f = SetModel(7, 3, kind).eval()
         z = f(x, m)

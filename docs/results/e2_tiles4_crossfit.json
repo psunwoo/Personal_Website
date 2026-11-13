@@ -1,0 +1,110 @@
+{
+ "rep": "tiles4",
+ "mode": "crossfit",
+ "n": {
+  "test": 17716
+ },
+ "seeds": 3,
+ "ceiling_model": null,
+ "ceiling_loss": NaN,
+ "hp": {
+  "add": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "poly2": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "poly3": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "deepsets": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "settrans": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  }
+ },
+ "models": {
+  "add": {
+   "loss": 1.0417945384979248,
+   "acc": 0.6298073132832845,
+   "acc_sd": 0.004483912298806194
+  },
+  "poly2": {
+   "loss": 1.034164309501648,
+   "acc": 0.6318205793698629,
+   "acc_sd": 0.003623206500122855,
+   "vs_add": {
+    "mean": 0.00763028113504686,
+    "lo": 0.0033603099309339243,
+    "hi": 0.011785315255444576,
+    "seed_sd": 0.002869918216015113,
+    "significant": true,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "poly3": {
+   "loss": 1.038133978843689,
+   "acc": 0.6282456715901693,
+   "acc_sd": 0.0020882607996516654,
+   "vs_add": {
+    "mean": 0.003660655197313293,
+    "lo": -0.0024022249966869653,
+    "hi": 0.008855797815246688,
+    "seed_sd": 0.0040810021670496495,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "deepsets": {
+   "loss": 1.0324779748916626,
+   "acc": 0.6289229989051819,
+   "acc_sd": 0.0012400915169286748,
+   "vs_add": {
+    "mean": 0.009316452796452063,
+    "lo": 0.0018876223792494097,
+    "hi": 0.017445161184359775,
+    "seed_sd": 0.004430273228130283,
+    "significant": true,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "settrans": {
+   "loss": 1.0607649087905884,
+   "acc": 0.6168247063954672,
+   "acc_sd": 0.0011852082342607474,
+   "vs_add": {
+    "mean": -0.018970351561304832,
+    "lo": -0.030649588906430568,
+    "hi": -0.006494038173552815,
+    "seed_sd": 0.0095825105673264,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  }
+ },
+ "sec": 3263.5
+}

@@ -74,6 +74,7 @@ def main() -> None:
     ap.add_argument("--max-test", type=int, default=20000)
     ap.add_argument("--seeds", type=int, default=3)
     ap.add_argument("--threads", type=int, default=1)
+    ap.add_argument("--tag", default="", help="suffix for output files, so a run does not overwrite another")
     args = ap.parse_args()
     torch.set_num_threads(args.threads)
     t0 = time.time()
@@ -123,7 +124,7 @@ def main() -> None:
                                             **{f"d_{k}": paired_bootstrap(losses["add"][:, m], losses[k][:, m], B=1000).as_dict()
                                                for k in losses if k != "add"})
     summ["sec"] = round(time.time() - t0, 1)
-    tag = "+".join(feats)
+    tag = "+".join(feats) + (f"_{args.tag}" if args.tag else "")
     Path(f"docs/results/e1c_sst_sets_{tag}.json").write_text(json.dumps(summ, indent=1))
     np.savez_compressed(f"runs/e1c_sst_{tag}_losses.npz", size=size, phrase=tab.phrase.to_numpy()[idx["test"]].astype(str),
                         **{k: v.astype(np.float32) for k, v in losses.items()})

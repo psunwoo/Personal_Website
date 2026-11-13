@@ -18,14 +18,21 @@ poly3     <= 3         poly2 + Q3 [(U A)*(V A)*(W A)]
 pair      <= 2         mean_{i != j} psi(x_i, x_j)   (explicit, Janossy k=2)
 deepsets  any          rho(A), rho an MLP
 settrans  any          self-attention over objects
+gate      (see below)  none; the additive logits are multiplied by prod_i m(x_i)
+
+"gate" is the operator/particle hypothesis: every object carries a value phi(x_i) and,
+separately, a multiplicative factor m(x_i) = 1 + 2 tanh(delta(x_i)) acting on the pooled value.
+It has no pair parameters at all, only one-body functions, yet a single element can flip or
+damp the total (negation, intensifiers).  Formally it contains all orders, but in a rigid,
+factorised form.
 """
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
 
-KINDS = ("add", "poly2", "poly3", "pair", "deepsets", "settrans")
-BODY_ORDER = {"add": 1, "poly2": 2, "pair": 2, "poly3": 3, "deepsets": None, "settrans": None}
+KINDS = ("add", "poly2", "poly3", "pair", "deepsets", "settrans", "gate")
+BODY_ORDER = {"add": 1, "poly2": 2, "pair": 2, "poly3": 3, "deepsets": None, "settrans": None, "gate": None}
 
 
 def mlp(d_in: int, hidden: int, d_out: int, dropout: float = 0.0) -> nn.Sequential:
@@ -61,6 +68,10 @@ class SetModel(nn.Module):
             nn.init.zeros_(self.psi[-1].bias)
         if kind == "deepsets":
             self.rho = mlp(K, hidden, n_out, dropout)
+        if kind == "gate":
+            self.delta = mlp(d_in, hidden, n_out, dropout)
+            nn.init.zeros_(self.delta[-1].weight)  # m = 1 everywhere: starts exactly at the additive model
+            nn.init.zeros_(self.delta[-1].bias)
         if kind == "settrans":
             self.inp = nn.Linear(d_in, K)
             layer = nn.TransformerEncoderLayer(K, 4, 2 * K, dropout, batch_first=True, norm_first=True)
@@ -87,6 +98,10 @@ class SetModel(nn.Module):
                 z = self.rho(A)
             if self.kind == "pair":
                 z = z + self.pair_term(x, mask)
+            if self.kind == "gate":
+                f = 1.0 + 2.0 * torch.tanh(self.delta(x))  # B,L,C in (-1, 3)
+                f = torch.where(mask.unsqueeze(-1), f, torch.ones_like(f))
+                z = z * f.prod(1)
         s = self.size(torch.cat([torch.log(nc), 1.0 / nc], dim=1))
         gain, bias = s[:, : self.n_out], s[:, self.n_out:]
         return torch.exp(gain) * z + bias
