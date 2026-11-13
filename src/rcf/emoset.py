@@ -31,7 +31,9 @@ def load(split: str, root: str = "data/features/emoset", keys: list[str] | None 
         raise FileNotFoundError(f"no extracted shards for split {split!r} in {root}")
     keys = keys or KEYS
     parts = [np.load(f) for f in files]
-    return {k: np.concatenate([p[k] for p in parts]) for k in keys}
+    out = {k: np.concatenate([p[k] for p in parts]) for k in keys}
+    # embeddings are stored as float16 to save disk; statistics on float16 overflow, so widen here
+    return {k: (v.astype(np.float32) if v.dtype == np.float16 else v) for k, v in out.items()}
 
 
 def onehot(label: np.ndarray, C: int = 8) -> np.ndarray:

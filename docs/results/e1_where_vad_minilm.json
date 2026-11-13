@@ -1,0 +1,283 @@
+{
+ "tag": "vad_minilm",
+ "model": "poly2",
+ "n": 10071,
+ "mean_gain": 0.022596634924411774,
+ "share_of_gain_in_top_5pct": 0.5166727900505066,
+ "share_of_items_with_positive_gain": 0.5073974779068613,
+ "corr_gain_vs_additive_error": 0.42062054582930547,
+ "top_items": [
+  {
+   "term": "not negative",
+   "gain": 11.045419692993164,
+   "additive_sq_err": 14.046295166015625
+  },
+  {
+   "term": "hate crime",
+   "gain": 7.843179225921631,
+   "additive_sq_err": 8.19318962097168
+  },
+  {
+   "term": "no disgust",
+   "gain": 7.677154541015625,
+   "additive_sq_err": 8.317342758178711
+  },
+  {
+   "term": "great disgust",
+   "gain": 6.234177589416504,
+   "additive_sq_err": 7.923178672790527
+  },
+  {
+   "term": "no nonsense",
+   "gain": 5.480707168579102,
+   "additive_sq_err": 6.209595680236816
+  },
+  {
+   "term": "greatly negative",
+   "gain": 5.265456199645996,
+   "additive_sq_err": 6.266512870788574
+  },
+  {
+   "term": "no joy",
+   "gain": 4.6422438621521,
+   "additive_sq_err": 5.316106796264648
+  },
+  {
+   "term": "not positive",
+   "gain": 4.6030426025390625,
+   "additive_sq_err": 5.912271022796631
+  },
+  {
+   "term": "no good",
+   "gain": 4.5101399421691895,
+   "additive_sq_err": 4.772089958190918
+  },
+  {
+   "term": "dead wrong",
+   "gain": 4.1251935958862305,
+   "additive_sq_err": 4.246515274047852
+  },
+  {
+   "term": "very negative",
+   "gain": 4.047994136810303,
+   "additive_sq_err": 4.352583408355713
+  },
+  {
+   "term": "no trust",
+   "gain": 4.015532493591309,
+   "additive_sq_err": 6.19785213470459
+  },
+  {
+   "term": "not guilty",
+   "gain": 3.7798447608947754,
+   "additive_sq_err": 4.07036828994751
+  },
+  {
+   "term": "not bad",
+   "gain": 3.6096673011779785,
+   "additive_sq_err": 5.51735782623291
+  },
+  {
+   "term": "no problem",
+   "gain": 3.546257734298706,
+   "additive_sq_err": 5.763955593109131
+  },
+  {
+   "term": "no pressure",
+   "gain": 3.1367945671081543,
+   "additive_sq_err": 5.942420482635498
+  },
+  {
+   "term": "no smoking",
+   "gain": 3.133044958114624,
+   "additive_sq_err": 3.441840410232544
+  },
+  {
+   "term": "false negative",
+   "gain": 2.970551013946533,
+   "additive_sq_err": 3.3029258251190186
+  },
+  {
+   "term": "no thanks",
+   "gain": 2.914031505584717,
+   "additive_sq_err": 2.995323896408081
+  },
+  {
+   "term": "stripped down",
+   "gain": 2.8304970264434814,
+   "additive_sq_err": 3.3117260932922363
+  },
+  {
+   "term": "criminal activities",
+   "gain": 2.591405153274536,
+   "additive_sq_err": 4.897345542907715
+  },
+  {
+   "term": "no worries",
+   "gain": 2.5132598876953125,
+   "additive_sq_err": 5.338436603546143
+  },
+  {
+   "term": "no win",
+   "gain": 2.4712817668914795,
+   "additive_sq_err": 3.227944850921631
+  },
+  {
+   "term": "opposite sex",
+   "gain": 2.3119051456451416,
+   "additive_sq_err": 3.2541136741638184
+  },
+  {
+   "term": "pajama pants",
+   "gain": 2.301910400390625,
+   "additive_sq_err": 3.7952582836151123
+  },
+  {
+   "term": "toxic waste",
+   "gain": 2.2766642570495605,
+   "additive_sq_err": 2.4651615619659424
+  },
+  {
+   "term": "health problem",
+   "gain": 2.2702624797821045,
+   "additive_sq_err": 3.4973723888397217
+  },
+  {
+   "term": "no doubt",
+   "gain": 2.251789093017578,
+   "additive_sq_err": 3.624385118484497
+  },
+  {
+   "term": "extremely negative",
+   "gain": 1.9728361368179321,
+   "additive_sq_err": 2.9033031463623047
+  },
+  {
+   "term": "no surprise",
+   "gain": 1.895190954208374,
+   "additive_sq_err": 2.9507594108581543
+  }
+ ],
+ "top_words": [
+  {
+   "slot": "first",
+   "word": "not",
+   "n": 22,
+   "mean_gain": 1.3130590915679932
+  },
+  {
+   "slot": "first",
+   "word": "no",
+   "n": 56,
+   "mean_gain": 0.9338385462760925
+  },
+  {
+   "slot": "first",
+   "word": "false",
+   "n": 12,
+   "mean_gain": 0.4524098336696625
+  },
+  {
+   "slot": "first",
+   "word": "low",
+   "n": 14,
+   "mean_gain": 0.4005611836910248
+  },
+  {
+   "slot": "first",
+   "word": "poor",
+   "n": 12,
+   "mean_gain": 0.3341747224330902
+  },
+  {
+   "slot": "first",
+   "word": "human",
+   "n": 14,
+   "mean_gain": 0.26570913195610046
+  },
+  {
+   "slot": "first",
+   "word": "dead",
+   "n": 18,
+   "mean_gain": 0.24605706334114075
+  },
+  {
+   "slot": "first",
+   "word": "death",
+   "n": 12,
+   "mean_gain": 0.22703689336776733
+  },
+  {
+   "slot": "first",
+   "word": "great",
+   "n": 26,
+   "mean_gain": 0.2017524093389511
+  },
+  {
+   "slot": "second",
+   "word": "zone",
+   "n": 13,
+   "mean_gain": 0.1794617772102356
+  },
+  {
+   "slot": "first",
+   "word": "tough",
+   "n": 13,
+   "mean_gain": 0.17380842566490173
+  },
+  {
+   "slot": "first",
+   "word": "state",
+   "n": 12,
+   "mean_gain": 0.16101481020450592
+  },
+  {
+   "slot": "first",
+   "word": "main",
+   "n": 12,
+   "mean_gain": 0.14980079233646393
+  },
+  {
+   "slot": "second",
+   "word": "business",
+   "n": 14,
+   "mean_gain": 0.1459140032529831
+  },
+  {
+   "slot": "first",
+   "word": "real",
+   "n": 15,
+   "mean_gain": 0.13193893432617188
+  },
+  {
+   "slot": "first",
+   "word": "high",
+   "n": 44,
+   "mean_gain": 0.12003675103187561
+  },
+  {
+   "slot": "second",
+   "word": "thing",
+   "n": 20,
+   "mean_gain": 0.11921651661396027
+  },
+  {
+   "slot": "first",
+   "word": "food",
+   "n": 12,
+   "mean_gain": 0.11747846752405167
+  },
+  {
+   "slot": "first",
+   "word": "personal",
+   "n": 14,
+   "mean_gain": 0.11328524351119995
+  },
+  {
+   "slot": "first",
+   "word": "health",
+   "n": 14,
+   "mean_gain": 0.10602130740880966
+  }
+ ]
+}

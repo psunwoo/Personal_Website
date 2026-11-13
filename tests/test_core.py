@@ -90,3 +90,15 @@ def test_planted_interaction_is_recovered_and_null_gives_null():
         out[eta] = paired_bootstrap(r["losses"]["add"].mean(-1), r["losses"]["pair"].mean(-1), B=300)
     assert out[0.5].lo > 0.02, out[0.5]
     assert out[0.0].mean < 0.01, out[0.0]
+
+
+def test_cca_recovers_shared_directions():
+    from rcf.rg import CCA
+
+    rng = np.random.default_rng(0)
+    s = rng.normal(size=(6000, 3))  # 3 shared latent directions
+    X = np.concatenate([s + 0.3 * rng.normal(size=s.shape), rng.normal(size=(6000, 7))], 1) @ rng.normal(size=(10, 10))
+    Y = np.concatenate([s + 0.3 * rng.normal(size=s.shape), rng.normal(size=(6000, 5))], 1) @ rng.normal(size=(8, 8))
+    c = CCA(X[:4000], Y[:4000])
+    rho = c.heldout_rho(X[4000:], Y[4000:])
+    assert (rho[:3] > 0.85).all() and (np.abs(rho[3:]) < 0.1).all(), rho

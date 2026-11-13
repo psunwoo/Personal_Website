@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 
 from .data import SetData, kfold
-from .train import fit, select_hp, test_loss
+from .train import fit, predict, select_hp, test_loss
 
 
 def _inner_split(n: int, seed: int, frac: float = 0.1) -> tuple[np.ndarray, np.ndarray]:
@@ -14,15 +14,16 @@ def _inner_split(n: int, seed: int, frac: float = 0.1) -> tuple[np.ndarray, np.n
 
 
 def crossfit(data: SetData, kinds: list[str], folds: int = 5, seeds: int = 5, tune: bool = True,
-             verbose: bool = True, **kw) -> dict:
+             verbose: bool = True, grid: list[dict] | None = None, **kw) -> dict:
     """Out-of-fold losses for every item.  Returns {kind: (seeds, n[, C])} plus chosen hyper-parameters."""
     f = kfold(len(data), folds, seed=0, groups=data.groups)
     losses = {k: [] for k in kinds}
     hps: dict[str, dict] = {}
+    acc: dict[str, list] = {}
     for k in kinds:
         tr0 = data.subset(np.where(f != 0)[0])
         a, b = _inner_split(len(tr0), 0)
-        hps[k] = select_hp(tr0.subset(a), tr0.subset(b), k, **kw) if tune else {}
+        hps[k] = select_hp(tr0.subset(a), tr0.subset(b), k, grid, **kw) if tune else {}
         for s in range(seeds):
             out = None
             for j in range(folds):
@@ -33,27 +34,33 @@ def crossfit(data: SetData, kinds: list[str], folds: int = 5, seeds: int = 5, tu
                 l = test_loss(ft, data.subset(te))
                 if out is None:
                     out = np.zeros((len(data),) + l.shape[1:], dtype=np.float32)
+                    hit = np.zeros(len(data), dtype=np.float32)
                 out[te] = l
+                if data.task == "dist":
+                    hit[te] = predict(ft, data.X[te], data.mask[te]).argmax(1) == data.y[te].argmax(1)
             losses[k].append(out)
+            acc.setdefault(k, []).append(float(hit.mean()))
             if verbose:
                 print(f"  {k:9s} seed {s}: loss {out.mean():.4f}", flush=True)
         losses[k] = np.stack(losses[k])
-    return dict(losses=losses, hp=hps)
+    return dict(losses=losses, hp=hps, acc=acc)
 
 
 def holdout(train: SetData, val: SetData, test: SetData, kinds: list[str], seeds: int = 5, tune: bool = True,
-            verbose: bool = True, keep_models: bool = False, **kw) -> dict:
+            verbose: bool = True, keep_models: bool = False, grid: list[dict] | None = None, **kw) -> dict:
     """Fixed train/val/test split.  Returns {kind: (seeds, n_test[, C])}."""
-    losses, hps, models = {}, {}, {}
+    losses, hps, models, acc = {}, {}, {}, {}
     for k in kinds:
-        hps[k] = select_hp(train, val, k, **kw) if tune else {}
+        hps[k] = select_hp(train, val, k, grid, **kw) if tune else {}
         ls = []
         for s in range(seeds):
             ft = fit(train, val, k, hps[k], seed=s, **kw)
             ls.append(test_loss(ft, test))
+            if test.task == "dist":
+                acc.setdefault(k, []).append(float((predict(ft, test.X, test.mask).argmax(1) == test.y.argmax(1)).mean()))
             if keep_models:
                 models.setdefault(k, []).append(ft)
             if verbose:
                 print(f"  {k:9s} seed {s}: loss {ls[-1].mean():.4f} (epochs {ft.epochs})", flush=True)
         losses[k] = np.stack(ls)
-    return dict(losses=losses, hp=hps, models=models)
+    return dict(losses=losses, hp=hps, models=models, acc=acc)

@@ -1,0 +1,164 @@
+"""Figures for docs/RESULTS.md, built from the JSON files in docs/results/."""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+
+R = Path("docs/results")
+OUT = R / "figs"
+SURFACE, INK, INK2, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#e4e3df"
+C = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"]  # validated categorical slots 1-4
+
+plt.rcParams.update({
+    "figure.facecolor": SURFACE, "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
+    "axes.edgecolor": GRID, "axes.labelcolor": INK2, "text.color": INK, "xtick.color": INK2, "ytick.color": INK2,
+    "axes.spines.top": False, "axes.spines.right": False, "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.8,
+    "font.size": 10, "axes.titlesize": 11, "axes.titleweight": "bold", "axes.titlelocation": "left",
+    "lines.linewidth": 2, "lines.markersize": 6, "legend.frameon": False,
+})
+
+
+def load(name: str):
+    p = R / name
+    return json.loads(p.read_text()) if p.exists() else None
+
+
+def q1_rows() -> list[tuple[str, float, float, float, bool]]:
+    """(label, share of headroom, lo, hi, passed) for the pre-specified second-order model (poly2)."""
+    rows = []
+    for tag, lab in (("vad_glove", "Two-word expressions"), ("conc_minilm", "Two-word expressions")):
+        d = load(f"e1_{tag}.json")
+        if not d:
+            continue
+        for node, v in zip(d["nodes"], d["models"]["poly2"]["vs_add"]):
+            h = v["headroom"]
+            rows.append((f"{lab}: {node}", v["mean"] / h, v["lo"] / h, v["hi"] / h, v["passed"]))
+    d = load("e1c_sst_sets_minilm+wordsent.json")
+    if d:
+        v = d["models"]["poly2"]["vs_add"]
+        rows.append(("Treebank phrases (2-12 words): sentiment", v["mean"] / v["headroom"], v["lo"] / v["headroom"], v["hi"] / v["headroom"], v["passed"]))
+    base = load("e2_tiles2_crossfit.json")
+    ceil = base["ceiling_loss"] if base else None
+    for rep, lab in (("tiles2", "Image, 2x2 tiles"), ("tiles3", "Image, 3x3 tiles"), ("tiles4", "Image, 4x4 tiles"),
+                     ("tags", "Image, concept tags"), ("attrs", "Image, dataset attributes")):
+        d = load(f"e2_{rep}_crossfit.json")
+        if not d or ceil is None:
+            continue
+        v = d["models"]["poly2"]["vs_add"]
+        h = d["models"]["add"]["loss"] - ceil
+        rows.append((f"{lab}: emotion", v["mean"] / h, v["lo"] / h, v["hi"] / h, v["lo"] > 0 and v["mean"] / h >= 0.1))
+    return rows
+
+
+def fig_q1() -> None:
+    rows = q1_rows()
+    if not rows:
+        return
+    fig, ax = plt.subplots(figsize=(8, 0.42 * len(rows) + 1.4))
+    y = np.arange(len(rows))[::-1]
+    for yi, (lab, m, lo, hi, ok) in zip(y, rows):
+        ax.plot([100 * lo, 100 * hi], [yi, yi], color=C[0], lw=2, solid_capstyle="round")
+        ax.plot(100 * m, yi, "o", color=C[0], ms=8, mec=SURFACE, mew=2)
+        ax.text(100 * hi + 0.6, yi, f"{100 * m:.1f}%", va="center", fontsize=9, color=INK2)
+    ax.axvline(10, color=INK2, lw=1, ls=(0, (4, 3)))
+    ax.text(10.2, len(rows) - 0.45, "pass threshold: 10% of headroom", fontsize=9, color=INK2, va="bottom")
+    ax.axvline(0, color=INK2, lw=0.8)
+    ax.set_yticks(y, [r[0] for r in rows])
+    ax.set_ylim(-0.6, len(rows) - 0.2)
+    ax.grid(axis="y", visible=False)
+    ax.set_xlabel("held-out gain of the second-order model over the additive one, as % of headroom (95% CI)")
+    ax.set_title("Q1: second-order gain is detectable in most test beds but below the pass threshold")
+    fig.tight_layout()
+    fig.savefig(OUT / "q1_summary.png", dpi=200)
+    plt.close(fig)
+
+
+def fig_e0() -> None:
+    p = R / "e0_synthetic.jsonl"
+    if not p.exists():
+        return
+    rows = [json.loads(l) for l in p.read_text().splitlines()]
+    fig, ax = plt.subplots(figsize=(6.4, 3.8))
+    for i, n in enumerate((4000, 16000)):
+        rr = sorted([r for r in rows if r["n_train"] == n and r["rep"] == 0], key=lambda r: r["eta"])
+        x = [max(r["eta"], 0.004) for r in rr]
+        m = [100 * r["poly2"]["share_of_headroom"] for r in rr]
+        lo = [100 * r["poly2"]["lo"] / r["poly2"]["headroom"] for r in rr]
+        hi = [100 * r["poly2"]["hi"] / r["poly2"]["headroom"] for r in rr]
+        ax.fill_between(x, lo, hi, color=C[i], alpha=0.15, lw=0)
+        ax.plot(x, m, "-o", color=C[i], mec=SURFACE, mew=2, ms=8, label=f"{n:,} training sets")
+        ax.text(x[-1] * 1.08, m[-1], f"{n // 1000}k", color=INK2, va="center", fontsize=9)
+    ax.axhline(10, color=INK2, lw=1, ls=(0, (4, 3)))
+    ax.text(0.0042, 11.5, "pass threshold", fontsize=9, color=INK2)
+    ax.set_xscale("log")
+    ax.set_xticks([0.004, 0.01, 0.03, 0.1, 0.3], ["0", "0.01", "0.03", "0.1", "0.3"])
+    ax.set_xlim(0.0035, 0.42)
+    ax.set_xlabel("planted interaction share of logit variance")
+    ax.set_ylabel("gain, % of headroom")
+    ax.set_title("Calibration: what the test can detect")
+    ax.legend(loc="upper left")
+    fig.tight_layout()
+    fig.savefig(OUT / "e0_power.png", dpi=200)
+    plt.close(fig)
+
+
+def fig_q2(tag: str) -> None:
+    d = load(f"e3_rg_{tag}.json")
+    if not d:
+        return
+    fig, ax = plt.subplots(figsize=(6.4, 3.8))
+    names = {"4": "4x4 tiles (56 px)", "3": "3x3 tiles (70 px)", "2": "2x2 tiles (112 px)"}
+    for i, g in enumerate(("4", "3", "2")):
+        r2 = np.array(d["spectrum"][g]["rho2"])
+        k = np.arange(1, len(r2) + 1)
+        ax.plot(k, np.clip(r2, 1e-4, None), color=C[i], label=names[g])
+        ax.text(1.05, r2[0] + (0.02 if i != 1 else -0.045), names[g].split(" (")[0], color=INK2, fontsize=9)
+    null = max(d["spectrum"][g]["rho2_null_p99"] for g in ("4", "3", "2"))
+    ax.axhline(null, color=INK2, lw=1, ls=(0, (4, 3)))
+    ax.text(1.05, null * 1.25, "null (environment from another image)", fontsize=9, color=INK2)
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_xlabel("direction rank k")
+    ax.set_ylabel("held-out canonical correlation, squared")
+    ax.set_title("Q2: the relevance spectrum has no gap")
+    ax.legend(loc="lower left")
+    fig.tight_layout()
+    fig.savefig(OUT / "q2_spectrum.png", dpi=200)
+    plt.close(fig)
+
+    rows = d["decode"]["4"]
+    ks = sorted({int(k.split("@")[1]) for k in rows if "@" in k})
+    fig, axes = plt.subplots(1, 3, figsize=(11, 3.6), sharex=True)
+    panels = [("emotion_acc", "evoked emotion (accuracy)"), ("brightness_r2", "brightness (R2)"), ("colorfulness_r2", "colourfulness (R2)")]
+    series = [("relevant", "most relevant (top CCA)"), ("pca", "highest variance (PCA)"), ("random", "random"), ("irrelevant", "least relevant")]
+    for ax, (m, title) in zip(axes, panels):
+        for i, (s, lab) in enumerate(series):
+            v = [rows[f"{s}@{k}"][m] for k in ks]
+            ax.plot(ks, v, "-o", color=C[i], mec=SURFACE, mew=1.5, ms=6, label=lab)
+        ax.axhline(rows["full"][m], color=INK2, lw=1, ls=(0, (4, 3)))
+        ax.set_xscale("log", base=2)
+        ax.set_xticks(ks, [str(k) for k in ks])
+        ax.set_title(title)
+        ax.set_xlabel("directions kept per tile")
+    axes[0].legend(loc="upper left", fontsize=8)
+    axes[0].text(ks[0], rows["full"]["emotion_acc"], " all 384", fontsize=8, color=INK2, va="bottom")
+    fig.suptitle("Q2: keeping only k directions per 56-px tile, then decoding linearly", x=0.01, ha="left", fontweight="bold")
+    fig.tight_layout()
+    fig.savefig(OUT / "q2_truncation.png", dpi=200)
+    plt.close(fig)
+
+
+if __name__ == "__main__":
+    import sys
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    fig_e0()
+    fig_q1()
+    fig_q2(sys.argv[1] if len(sys.argv) > 1 else "test")
+    print(sorted(p.name for p in OUT.glob("*.png")))

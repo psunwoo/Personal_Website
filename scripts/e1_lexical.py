@@ -44,6 +44,7 @@ def main() -> None:
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--batch", type=int, default=256)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--kinds", default=",".join(KINDS))
     args = ap.parse_args()
     torch.set_num_threads(args.threads)
     feats = tuple(args.features.split(","))
@@ -52,7 +53,7 @@ def main() -> None:
     data, df = lexical.bigram_dataset(args.target, feats, require_norms=args.require_norms)
     ceil = lexical.ceiling(args.target, data)
     print(f"[{tag}] n={len(data)} d={data.X.shape[-1]} ceiling={np.round(ceil, 4)}", flush=True)
-    res = crossfit(data, KINDS, folds=args.folds, seeds=args.seeds, batch=args.batch)
+    res = crossfit(data, args.kinds.split(","), folds=args.folds, seeds=args.seeds, batch=args.batch)
     losses = dict(res["losses"])
     for m in [w for w in args.whole.split(",") if w]:
         wd = lexical.whole_phrase_dataset(df, data.y, m, data.names)
