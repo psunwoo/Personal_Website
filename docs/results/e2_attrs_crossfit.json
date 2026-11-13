@@ -1,0 +1,95 @@
+{
+ "rep": "attrs",
+ "mode": "crossfit",
+ "n": {
+  "test": 17716
+ },
+ "seeds": 3,
+ "ceiling_model": null,
+ "ceiling_loss": NaN,
+ "hp": {
+  "add": {},
+  "poly2": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "poly3": {},
+  "deepsets": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "settrans": {}
+ },
+ "models": {
+  "add": {
+   "loss": 1.3147249221801758,
+   "acc": 0.5095017552375793,
+   "acc_sd": 0.0009336100517926415
+  },
+  "poly2": {
+   "loss": 1.3153008222579956,
+   "acc": 0.5103108485539755,
+   "acc_sd": 0.0005762490833228642,
+   "vs_add": {
+    "mean": -0.0005759388304292784,
+    "lo": -0.004540391698954668,
+    "hi": 0.0031840219740191895,
+    "seed_sd": 0.0028433386385390913,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "poly3": {
+   "loss": 1.3180747032165527,
+   "acc": 0.5106307069460551,
+   "acc_sd": 0.0006358312666628307,
+   "vs_add": {
+    "mean": -0.003349924656532627,
+    "lo": -0.007150887675820449,
+    "hi": 1.974112930325437e-05,
+    "seed_sd": 0.001285144204696956,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "deepsets": {
+   "loss": 1.3266520500183105,
+   "acc": 0.5109505454699198,
+   "acc_sd": 0.0025373548300726932,
+   "vs_add": {
+    "mean": -0.011927378111460902,
+    "lo": -0.019348330788981953,
+    "hi": -0.0046141255672979015,
+    "seed_sd": 0.006420218600293197,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "settrans": {
+   "loss": 1.314450979232788,
+   "acc": 0.5148077011108398,
+   "acc_sd": 0.0011515973913160259,
+   "vs_add": {
+    "mean": 0.00027393966453585235,
+    "lo": -0.005667236430892934,
+    "hi": 0.006680233075813523,
+    "seed_sd": 0.0032627013702543894,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  }
+ },
+ "sec": 3682.5
+}

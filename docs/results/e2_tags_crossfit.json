@@ -1,0 +1,105 @@
+{
+ "rep": "tags",
+ "mode": "crossfit",
+ "n": {
+  "test": 17716
+ },
+ "seeds": 3,
+ "ceiling_model": null,
+ "ceiling_loss": NaN,
+ "hp": {
+  "add": {},
+  "poly2": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "poly3": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "deepsets": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "settrans": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  }
+ },
+ "models": {
+  "add": {
+   "loss": 0.8872630596160889,
+   "acc": 0.6799691319465637,
+   "acc_sd": 0.00035801073613738214
+  },
+  "poly2": {
+   "loss": 0.8844147324562073,
+   "acc": 0.6820200284322103,
+   "acc_sd": 0.00023650339087263303,
+   "vs_add": {
+    "mean": 0.0028483310019648336,
+    "lo": -0.0016219162593231944,
+    "hi": 0.007770797411048403,
+    "seed_sd": 0.003864027779342113,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "poly3": {
+   "loss": 0.8877259492874146,
+   "acc": 0.683506429195404,
+   "acc_sd": 0.0007417103436459061,
+   "vs_add": {
+    "mean": -0.00046291724895460083,
+    "lo": -0.004516744657499166,
+    "hi": 0.0037825736054200704,
+    "seed_sd": 0.000997887267300389,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "deepsets": {
+   "loss": 0.9084562659263611,
+   "acc": 0.6768458088239034,
+   "acc_sd": 0.0027564379374034327,
+   "vs_add": {
+    "mean": -0.021193175275188585,
+    "lo": -0.029453018003076994,
+    "hi": -0.01307897102822802,
+    "seed_sd": 0.006320387419049312,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "settrans": {
+   "loss": 0.8965209722518921,
+   "acc": 0.6790283719698588,
+   "acc_sd": 0.0011744341223056162,
+   "vs_add": {
+    "mean": -0.009257918595791207,
+    "lo": -0.020919217148218473,
+    "hi": 0.0025333636390457745,
+    "seed_sd": 0.01054222056375592,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  }
+ },
+ "sec": 3013.2
+}

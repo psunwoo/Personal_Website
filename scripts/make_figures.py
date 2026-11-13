@@ -65,7 +65,7 @@ def fig_q1() -> None:
     for yi, (lab, m, lo, hi, ok) in zip(y, rows):
         ax.plot([100 * lo, 100 * hi], [yi, yi], color=C[0], lw=2, solid_capstyle="round")
         ax.plot(100 * m, yi, "o", color=C[0], ms=8, mec=SURFACE, mew=2)
-        ax.text(100 * hi + 1.2, yi, f"{100 * m:.1f}%", va="center", fontsize=9, color=INK2)
+        ax.text(100 * hi + 1.2, yi, f"{100 * m:.1f}%", va="center", fontsize=9, color=INK2, bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1.5))
     ax.axvline(10, color=INK2, lw=1, ls=(0, (4, 3)))
     ax.text(10.6, len(rows) - 0.5, "pass threshold (10%)", fontsize=9, color=INK2, va="bottom")
     ax.axvline(0, color=INK2, lw=0.8)

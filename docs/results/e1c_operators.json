@@ -1,0 +1,361 @@
+{
+ "n_words": 934,
+ "share_within_0p1_of_one": 0.5995717344753747,
+ "share_below_half": 0.010706638115631691,
+ "share_negative": 0.0,
+ "share_above_1p5": 0.0,
+ "lowest": [
+  {
+   "word": "n't",
+   "factor": 0.005867123603820801,
+   "seed_sd": 0.30833911895751953,
+   "count": 633,
+   "own_sentiment": 0.4166699945926666
+  },
+  {
+   "word": "not",
+   "factor": 0.11239409446716309,
+   "seed_sd": 0.22610275447368622,
+   "count": 609,
+   "own_sentiment": 0.31944000720977783
+  },
+  {
+   "word": "never",
+   "factor": 0.13893039524555206,
+   "seed_sd": 0.18811386823654175,
+   "count": 182,
+   "own_sentiment": 0.43055999279022217
+  },
+  {
+   "word": "Not",
+   "factor": 0.15533776581287384,
+   "seed_sd": 0.20922990143299103,
+   "count": 29,
+   "own_sentiment": 0.4027799963951111
+  },
+  {
+   "word": "no",
+   "factor": 0.18102580308914185,
+   "seed_sd": 0.3663036525249481,
+   "count": 324,
+   "own_sentiment": 0.2916699945926666
+  },
+  {
+   "word": "nor",
+   "factor": 0.20728109776973724,
+   "seed_sd": 0.26122668385505676,
+   "count": 46,
+   "own_sentiment": 0.44444000720977783
+  },
+  {
+   "word": "No",
+   "factor": 0.2292463779449463,
+   "seed_sd": 0.35401827096939087,
+   "count": 25,
+   "own_sentiment": 0.38888999819755554
+  },
+  {
+   "word": "without",
+   "factor": 0.3570137917995453,
+   "seed_sd": 0.12251124531030655,
+   "count": 142,
+   "own_sentiment": 0.43055999279022217
+  },
+  {
+   "word": "less",
+   "factor": 0.379330039024353,
+   "seed_sd": 0.2543784976005554,
+   "count": 121,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "need",
+   "factor": 0.41942131519317627,
+   "seed_sd": 0.1975206881761551,
+   "count": 83,
+   "own_sentiment": 0.44444000720977783
+  },
+  {
+   "word": "lack",
+   "factor": 0.5001233220100403,
+   "seed_sd": 0.045938558876514435,
+   "count": 44,
+   "own_sentiment": 0.44444000720977783
+  },
+  {
+   "word": "else",
+   "factor": 0.5233610272407532,
+   "seed_sd": 0.15004995465278625,
+   "count": 54,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "pointless",
+   "factor": 0.566044807434082,
+   "seed_sd": 0.09145255386829376,
+   "count": 28,
+   "own_sentiment": 0.11111000180244446
+  },
+  {
+   "word": "lacking",
+   "factor": 0.581332802772522,
+   "seed_sd": 0.09457633644342422,
+   "count": 26,
+   "own_sentiment": 0.375
+  },
+  {
+   "word": "before",
+   "factor": 0.5938585996627808,
+   "seed_sd": 0.12521576881408691,
+   "count": 112,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "impossible",
+   "factor": 0.5997177362442017,
+   "seed_sd": 0.08265168219804764,
+   "count": 31,
+   "own_sentiment": 0.16666999459266663
+  },
+  {
+   "word": "lacks",
+   "factor": 0.6176326870918274,
+   "seed_sd": 0.07991047203540802,
+   "count": 36,
+   "own_sentiment": 0.3472200036048889
+  },
+  {
+   "word": "barely",
+   "factor": 0.635843813419342,
+   "seed_sd": 0.198466494679451,
+   "count": 37,
+   "own_sentiment": 0.44444000720977783
+  },
+  {
+   "word": "worse",
+   "factor": 0.6377798914909363,
+   "seed_sd": 0.06526615470647812,
+   "count": 28,
+   "own_sentiment": 0.25
+  },
+  {
+   "word": "neither",
+   "factor": 0.6401521563529968,
+   "seed_sd": 0.14151303470134735,
+   "count": 35,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "ugly",
+   "factor": 0.6478090882301331,
+   "seed_sd": 0.057355862110853195,
+   "count": 36,
+   "own_sentiment": 0.3333300054073334
+  },
+  {
+   "word": "bad",
+   "factor": 0.6549047231674194,
+   "seed_sd": 0.06348875164985657,
+   "count": 218,
+   "own_sentiment": 0.125
+  },
+  {
+   "word": "instead",
+   "factor": 0.6612886190414429,
+   "seed_sd": 0.05359191820025444,
+   "count": 33,
+   "own_sentiment": 0.44444000720977783
+  },
+  {
+   "word": "anyone",
+   "factor": 0.6655596494674683,
+   "seed_sd": 0.08761782199144363,
+   "count": 52,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "unfunny",
+   "factor": 0.6891759037971497,
+   "seed_sd": 0.07294441759586334,
+   "count": 27,
+   "own_sentiment": 0.25
+  },
+  {
+   "word": "early",
+   "factor": 0.6954212188720703,
+   "seed_sd": 0.16279712319374084,
+   "count": 25,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "charming",
+   "factor": 0.696742057800293,
+   "seed_sd": 0.12333092838525772,
+   "count": 68,
+   "own_sentiment": 0.833329975605011
+  },
+  {
+   "word": "trying",
+   "factor": 0.7046049237251282,
+   "seed_sd": 0.09032075852155685,
+   "count": 44,
+   "own_sentiment": 0.5972200036048889
+  },
+  {
+   "word": "evil",
+   "factor": 0.7046510577201843,
+   "seed_sd": 0.046899713575839996,
+   "count": 25,
+   "own_sentiment": 0.22222000360488892
+  },
+  {
+   "word": "better",
+   "factor": 0.7093510627746582,
+   "seed_sd": 0.0962282344698906,
+   "count": 195,
+   "own_sentiment": 0.833329975605011
+  }
+ ],
+ "highest": [
+  {
+   "word": "year",
+   "factor": 1.349535584449768,
+   "seed_sd": 0.13093499839305878,
+   "count": 94,
+   "own_sentiment": 0.5138900279998779
+  },
+  {
+   "word": "filmmaking",
+   "factor": 1.3011246919631958,
+   "seed_sd": 0.04286627471446991,
+   "count": 63,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "films",
+   "factor": 1.2723499536514282,
+   "seed_sd": 0.013340183533728123,
+   "count": 199,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "lot",
+   "factor": 1.2664846181869507,
+   "seed_sd": 0.048000894486904144,
+   "count": 102,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "film",
+   "factor": 1.2662328481674194,
+   "seed_sd": 0.013965814374387264,
+   "count": 1266,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "Big",
+   "factor": 1.2652405500411987,
+   "seed_sd": 0.08275248855352402,
+   "count": 27,
+   "own_sentiment": 0.541670024394989
+  },
+  {
+   "word": "big",
+   "factor": 1.2649261951446533,
+   "seed_sd": 0.08371447771787643,
+   "count": 133,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "cinema",
+   "factor": 1.2478630542755127,
+   "seed_sd": 0.020402684807777405,
+   "count": 111,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "cinematic",
+   "factor": 1.2468476295471191,
+   "seed_sd": 0.033298321068286896,
+   "count": 97,
+   "own_sentiment": 0.75
+  },
+  {
+   "word": "movie",
+   "factor": 1.2420274019241333,
+   "seed_sd": 0.018112745136022568,
+   "count": 1143,
+   "own_sentiment": 0.5277799963951111
+  },
+  {
+   "word": "years",
+   "factor": 1.2277249097824097,
+   "seed_sd": 0.05889882892370224,
+   "count": 102,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "screenplay",
+   "factor": 1.2254853248596191,
+   "seed_sd": 0.03701041638851166,
+   "count": 68,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "completely",
+   "factor": 1.225476861000061,
+   "seed_sd": 0.08043678104877472,
+   "count": 47,
+   "own_sentiment": 0.583329975605011
+  },
+  {
+   "word": "overall",
+   "factor": 1.2245488166809082,
+   "seed_sd": 0.031063932925462723,
+   "count": 27,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "filmmakers",
+   "factor": 1.2204612493515015,
+   "seed_sd": 0.013914474286139011,
+   "count": 40,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "most",
+   "factor": 1.2193301916122437,
+   "seed_sd": 0.025992557406425476,
+   "count": 417,
+   "own_sentiment": 0.5555599927902222
+  },
+  {
+   "word": "directed",
+   "factor": 1.2176522016525269,
+   "seed_sd": 0.028554903343319893,
+   "count": 42,
+   "own_sentiment": 0.5555599927902222
+  },
+  {
+   "word": "Oscar",
+   "factor": 1.2162318229675293,
+   "seed_sd": 0.015257349237799644,
+   "count": 39,
+   "own_sentiment": 0.6111099720001221
+  },
+  {
+   "word": "filmmaker",
+   "factor": 1.2161897420883179,
+   "seed_sd": 0.024271557107567787,
+   "count": 39,
+   "own_sentiment": 0.5
+  },
+  {
+   "word": "actors",
+   "factor": 1.2161402702331543,
+   "seed_sd": 0.027015436440706253,
+   "count": 92,
+   "own_sentiment": 0.5694400072097778
+  }
+ ]
+}

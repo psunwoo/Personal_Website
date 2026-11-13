@@ -1,6 +1,6 @@
 # Spike proposal — Relational Concept Flow
 
-Status: proposal, awaiting founder go-ahead. No code, downloads or jobs yet.
+Status: approved 2026-11-13 (pass rule, 5-week stop, categorical primary target, language-derived features, Q2 redefinition). First-pass results are in `RESULTS.md`; the Affection ∩ Visual Genome experiment described below is still pending data access.
 
 ## 1. Corrections to the brief that shape the experiment
 

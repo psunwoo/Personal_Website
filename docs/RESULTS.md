@@ -13,13 +13,16 @@ Run on 2026-11-13, CPU only (4 vCPU, no GPU was available). Every number below i
 | Two-word expressions: arousal, dominance | human | +0.006, +0.009 | 1–2% | fails |
 | Two-word expressions: concreteness | human | +0.014 [+0.008, +0.020] | 5.8% | fails |
 | Images, 2×2 isolated tiles: evoked emotion | human | −0.001 [−0.003, +0.003] | −1.5% | fails (null) |
+| Images, 3×3 isolated tiles | human | +0.001 [−0.003, +0.003] | 0.3% | fails (null) |
 | Images, 4×4 isolated tiles | human | +0.008 [+0.003, +0.012] | 2.5% | fails |
-<!--E2ROWS-->
+| Images, named concept tags | human (tags from CLIP) | +0.003 [−0.002, +0.008] | 2.0% | fails (null) |
+| Images, dataset attributes | human (attributes machine-made) | −0.001 [−0.005, +0.003] | −0.1% | fails (null) |
 
 $\Delta_2$ is in units of label variance for the language rows and in nats of cross-entropy for the image rows.
 
 - The interaction is real in language and grows with the number of words. It is small for pairs and absent or tiny for image parts.
 - Where it exists, it is **sparse and operator-like**: a handful of words ("not", "no", "false", "low") carry about half of the gain. It is not a generic pair potential between objects.
+- A **gated additive model**, with one-body functions only (each word has a value and a multiplicative factor on the total), reproduces the whole second-order gain on the treebank: +0.045 [+0.030, +0.061] against +0.044. The factors it learns single out negators without supervision (section 3.4).
 - Most of what the additive model misses is **not** recovered by any order of interaction among the given one-body descriptors. It is information the descriptors lack (idioms such as "bad egg"; objects cut by a tile border).
 
 Against the kill criterion as worded ("no significant gain from order $\ge 2$"): not met, since the gain is significant in language. Against the pass rule: met only on the treebank, where the ceiling is lenient. My reading is in section 6.
@@ -43,6 +46,8 @@ Against the kill criterion as worded ("no significant gain from order $\ge 2$"):
 | Q2 | gated on Q1 | run anyway, since it needed no extra data: 20,669 images (test + part of validation) |
 | Compute | GPU from week 3 | none available: the container has no GPU and no cloud GPU credentials were provided |
 | Per-user couplings (brief §3.3) | stub | untested: no open dataset here carries annotator identities |
+| Gated additive model | not planned | added after seeing where the interaction sits (3.4) |
+| Network | — | hosts allowed for this work: huggingface.co and its CDN (us.aws.cdn.hf.co), download.pytorch.org (+ download-r2), saifmohammad.com, Visual Genome and COCO hosts (allowed, unused so far) |
 
 Objects are always embedded **in isolation**, so the order-1 model is truly one-body: single words (GloVe or MiniLM, each word encoded alone), single image tiles (DINOv2 ViT-S/14, each tile passed alone), single tag words. Features taken from a whole-image or whole-sentence encoder already contain interactions and would make the test meaningless; those are used only as any-order references.
 
@@ -140,11 +145,47 @@ For valence of two-word expressions, per-item gain of the second-order model:
 
 These words do not contribute a value; they act on the other word's value (sign flip, attenuation). In the language of the expansion, $\phi^{(2)}$ is concentrated on pairs that contain one of a small set of operator-like elements.
 
+**Direct test: a gated additive model.** $z = \big[\prod_j m(x_j)\big]\,\frac1N\sum_i \phi(x_i)$, with $m = 1 + 2\tanh\delta(x) \in (-1, 3)$ and $\delta = 0$ at initialisation. It has no pair parameters.
+
+| test bed | additive $R^2$ | gated additive, $\Delta$ vs additive | ACE degree 2, $\Delta$ vs additive |
+|---|---|---|---|
+| Treebank phrases, 2–12 words | 0.483 | +0.0449 [+0.0300, +0.0609] | +0.0438 [+0.0282, +0.0609] |
+| Treebank, 2 words | | +0.026 [+0.018, +0.033] | +0.011 [−0.002, +0.023] |
+| Treebank, 6–8 words | | +0.077 [+0.051, +0.108] | +0.077 [+0.049, +0.111] |
+| Two-word expressions, valence (GloVe) | 0.578 | +0.0084 [+0.0026, +0.0143] | +0.0208 [+0.0139, +0.0279] |
+
+- On the treebank the gated model equals the generic second-order model, and is better for two-word phrases.
+- On the NRC two-word expressions it recovers about 40% of the second-order gain. Those expressions are mostly lexicalised compounds ("hate crime", "problem solver") rather than modifier + head, so less of the gain has operator form.
+
+Learned factors for the 934 words seen at least 25 times (mean of three seeds):
+
+| factor $m$ | words |
+|---|---|
+| 0.0–0.25 | n't (0.01), not (0.11), never (0.14), no (0.18), nor (0.21) |
+| 0.35–0.65 | without (0.36), less (0.38), need (0.42), lack (0.50), lacking (0.58), impossible (0.60), barely (0.64), neither (0.64) |
+| within 0.1 of 1 | 60% of words |
+| largest | year (1.35), filmmaking (1.30), big (1.26), completely (1.23), most (1.22) |
+
+- About 1% of the vocabulary has $m < 0.5$. No word has $m < 0$: negation damps the total toward neutral rather than flipping it.
+- Seed-to-seed standard deviation of the factors for the strongest negators is 0.2–0.4, so the ranking is firm but the exact values are not.
+
 ### 3.5 Images (EmoSet, evoked emotion, 8 classes)
 
 17,716 images, five-fold cross-fitting, three seeds. Ceiling for the pass rule: an MLP on the whole-image DINOv2 embedding (cross-entropy 0.742, accuracy 73.4%). A whole-image CLIP embedding reaches 0.595 and 78.4%.
 
-<!--E2TABLE-->
+| objects (each embedded alone) | additive: loss (accuracy) | $\Delta_2$, ACE degree 2 | $\Delta_3$, ACE degree 3 | Deep Sets | Set Transformer | $\Delta_2$ as % of headroom |
+|---|---|---|---|---|---|---|
+| 2×2 tiles, 112 px | 0.798 (71.1%) | −0.0008 [−0.0034, +0.0031] | +0.0005 [−0.0023, +0.0047] | −0.0134 | −0.0277 | −1.5% |
+| 3×3 tiles, 70 px | 0.931 (66.8%) | +0.0005 [−0.0034, +0.0033] | +0.0019 [−0.0017, +0.0053] | −0.0044 | −0.0109 | 0.3% |
+| 4×4 tiles, 56 px | 1.042 (63.0%) | +0.0076 [+0.0034, +0.0118] | +0.0037 [−0.0024, +0.0089] | +0.0093 | −0.0190 | 2.5% |
+| 8 concept tags: text embedding + human word norms | 0.887 (68.0%) | +0.0028 [−0.0016, +0.0078] | −0.0005 [−0.0045, +0.0038] | −0.0212 | −0.0093 | 2.0% |
+| 8 concept tags: human word norms only | 1.184 (58.0%) | +0.0186 [+0.0121, +0.0252] | +0.0068 [−0.0035, +0.0175] | +0.0023 | +0.0150 | 4.2% |
+| EmoSet's own attributes (1–8 per image) | 1.315 (51.0%) | −0.0006 [−0.0045, +0.0032] | −0.0033 [−0.0072, +0.0000] | −0.0119 | +0.0003 | −0.1% |
+
+Positive $\Delta$ means better than additive. The explicit pair model was run for 2×2 tiles only: +0.0036 [−0.0025, +0.0107]. Concept tags are the eight nearest concrete nouns (out of 2,095 with human norms) under CLIP similarity.
+
+- With word norms as the only description of each tag, the ACE form gains +0.019, but Deep Sets does not, and this is the low-dimensional regime where my additive network is known to under-fit (see caveats). I treat it as unconfirmed.
+- EmoSet's own attributes (scene, objects, facial expression, action, brightness, colourfulness) show no interaction either, but they are a thin description: scene is missing for 77% of images and 47% have no object listed.
 
 - At the 2×2 scale emotion is additive over isolated quadrants to within noise.
 - At the 4×4 scale a small second-order gain appears, 2.5% of headroom.
@@ -186,7 +227,7 @@ Two bugs were found and fixed before these numbers: a float16 overflow in standa
 ## 5. Reading in physics terms
 
 1. **The one-body term dominates and the series converges fast.** Order 2 captures most of what any order captures; order 3 adds under a point. This is the regime where a cluster expansion is useful, but also where it has little to say beyond mean field.
-2. **The pair term is not a pair potential.** It is concentrated on a few elements that act multiplicatively on their partner. A better hypothesis class than a generic $\phi^{(2)}(x_i,x_j)$ is a split into "particles" carrying values and "operators" acting on them, e.g. $a = \big[\prod_j m(x_j)\big]\sum_i\phi(x_i)$ with $m \approx 1$ for almost all elements.
+2. **The pair term is not a pair potential.** It is concentrated on a few elements that act multiplicatively on their partner. A split into "particles" carrying values and "operators" acting on them, $a = \big[\prod_j m(x_j)\big]\sum_i\phi(x_i)$ with $m \approx 1$ for almost all elements, fits the treebank as well as a generic $\phi^{(2)}$ does (3.4).
 3. **The larger deficit is in the particle list, not in the interactions.** "Bad egg" is not a bound state computable from "bad" and "egg"; it is a separate entry. No body order fixes a missing degree of freedom.
 4. **RSMI relevance measures spatial correlation length, not abstraction.** Anything shared across the scene is relevant: semantics, affect, and also illumination. To separate abstract from sensory one needs a second axis, such as invariance under changes of appearance.
 5. **No scale separation is visible.** A smooth spectrum over three block sizes is what one expects away from any fixed point. The RG vocabulary (relevant, irrelevant, exponents) is not supported by these data beyond analogy.
@@ -196,7 +237,7 @@ Two bugs were found and fixed before these numbers: a float16 overflow in standa
 Neither stop nor continue as planned.
 
 - The broad claim, that meaning emerges from many-body combination of object activations, is weakly supported: it holds in language at a few points of variance, and not for image regions.
-- The specific finding worth pursuing is the operator/particle structure in point 2. It is cheap to test (a gated additive model against the ACE form on the treebank and on two-word expressions), falsifiable, and directly usable in the venture engine as a small set of modifier rules on top of additive rendering.
+- The specific finding worth pursuing is the operator/particle structure in point 2. A first test already supports it on the treebank and partly on two-word expressions (3.4). It is directly usable in the venture engine: additive rendering plus a short, learnable list of modifiers. Open questions: whether images have any analogue of an operator (the tile and tag tests found none), and whether the factors are personal.
 - The object-level image test is still open and needs the gated data.
 
 ## 7. Caveats
