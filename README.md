@@ -21,7 +21,8 @@ src/rcf/        models.py   set models with controlled body order (additive, ACE
                 rg.py      CCA-based relevance spectrum
 scripts/        e0_synthetic.py  e1_lexical.py  e1_norms_gbm.py  e1c_sst.py  e1c_operators.py  e1_where.py
                 extract_emoset.py  e2_emoset.py  e3_rg.py  make_tables.py  make_figures.py
-                e4_goemotions.py  e4b_sgate.py  e4_ops.py  e4_personal.py  e4c_onboarding.py   emotions and per-rater couplings
+                e4_goemotions.py  e4b_sgate.py  e4_ops.py  e4_personal.py  e4c_onboarding.py
+                e4d_userspace.py  e4e_joint.py   emotions, per-rater couplings, cold start, joint training
                 e5_operators.py  e5b_short_list.py   operator sparsity and transfer
 tests/          unit tests, including recovery of a planted interaction
 docs/results/   JSON outputs and figures

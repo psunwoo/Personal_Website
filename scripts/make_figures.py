@@ -179,25 +179,26 @@ def fig_shortlist() -> None:
 
 
 def fig_onboarding() -> None:
-    d, p = load("e4c_onboarding.json"), load("e4_personal.json")
+    d, p = load("e4d_userspace.json"), load("e4_personal_add+gate+sgate.json")
     if not d or not p:
         return
     op = p["bases"]["add"]["shared"]["loss"] - p["bases"]["gate"]["shared"]["loss"]
-    xs = [r["n"] if i < len(d["curve"]) - 1 else 2700 for i, r in enumerate(d["curve"])]
     fig, ax = plt.subplots(figsize=(6.8, 4.0))
-    names = [("lowrank", "+ personal reading of content"), ("gain", "+ personal response strength"), ("field", "personal field only")]
+    names = [("field_full", "full field (28 numbers)"), ("field_k8", "8-dimensional user space"), ("field_k2", "2-dimensional user space")]
     for i, (k, lab) in enumerate(names):
-        m = [r[k]["mean"] for r in d["curve"]]
-        ax.fill_between(xs, [r[k]["lo"] for r in d["curve"]], [r[k]["hi"] for r in d["curve"]], color=C[i], alpha=0.15, lw=0)
-        ax.plot(xs, m, "-o", color=C[i], mec=SURFACE, mew=1.5, ms=6, label=lab)
+        rr = sorted([r for r in d["cold_start"] if r["model"] == k], key=lambda r: r["n"])
+        xs = [r["n"] for r in rr]
+        ax.fill_between(xs, [r["gain"]["lo"] for r in rr], [r["gain"]["hi"] for r in rr], color=C[i], alpha=0.13, lw=0)
+        ax.plot(xs, [r["gain"]["mean"] for r in rr], "-o", color=C[i], mec=SURFACE, mew=1.5, ms=6, label=lab)
     ax.axhline(op, color=INK2, lw=1, ls=(0, (4, 3)))
-    ax.text(xs[-1], op - 0.006, "gain from operators (shared model)", fontsize=9, color=INK2, ha="right", va="top")
+    ax.text(xs[-1], op - 0.008, "gain from operators (shared model)", fontsize=9, color=INK2, ha="right", va="top")
+    ax.axhline(0, color=INK2, lw=0.8)
     ax.set_xscale("log")
-    ax.set_xticks(xs, [str(x) for x in xs[:-1]] + ["all"])
+    ax.set_xticks(xs, [str(x) for x in xs])
     ax.minorticks_off()
-    ax.set_xlabel("ratings available from the person")
+    ax.set_xlabel("ratings available from a new person")
     ax.set_ylabel("held-out gain, nats per rating")
-    ax.set_title("Personal couplings: what a person's own ratings buy")
+    ax.set_title("Cold start: what a new person's first ratings buy")
     ax.legend(loc="upper left", fontsize=9)
     fig.tight_layout()
     fig.savefig(OUT / "personal_onboarding.png", dpi=200)

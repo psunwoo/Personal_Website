@@ -63,7 +63,7 @@ def ce(z: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     return -(y * F_.log_softmax(z, -1)).sum(-1)
 
 
-def fit_eval(kind: str, fz: dict, rows: dict, n_users: int, seed: int, epochs: int = 25, wd: float = 1e-3, **kw):
+def fit_eval(kind: str, fz: dict, rows: dict, n_users: int, seed: int, epochs: int = 40, wd: float = 1e-3, **kw):
     torch.manual_seed(seed)
     m = Personal(kind, n_users, fz["A"].shape[1], **kw)
     shared = [m.a, m.b] + list(m.V.parameters())
@@ -87,13 +87,24 @@ def fit_eval(kind: str, fz: dict, rows: dict, n_users: int, seed: int, epochs: i
             best, state, bad = vl, {k: v.clone() for k, v in m.state_dict().items()}, 0
         else:
             bad += 1
-            if bad >= 3:
+            if bad >= 4:
                 break
     m.load_state_dict(state)
     with torch.no_grad():
         tl = torch.cat([ce(m(fz, rows["test"][0][s:s + 8192], rows["test"][1][s:s + 8192]), rows["test"][2][s:s + 8192])
                         for s in range(0, len(rows["test"][0]), 8192)]).numpy()
-    return tl, m
+    return tl, m, best
+
+
+WDS = (1e-3, 1e-4, 1e-5, 1e-6)
+
+
+def tuned(kind: str, fz: dict, rows: dict, n_users: int, seeds: int = 3, **kw) -> tuple[np.ndarray, float]:
+    """Pick the L2 strength on the personal parameters by validation loss (seed 0), then run the seeds."""
+    if kind == "shared":
+        return np.stack([fit_eval(kind, fz, rows, n_users, s, **kw)[0] for s in range(seeds)]), 0.0
+    wd = min(WDS, key=lambda w: fit_eval(kind, fz, rows, n_users, 0, wd=w, **kw)[2])
+    return np.stack([fit_eval(kind, fz, rows, n_users, s, wd=wd, **kw)[0] for s in range(seeds)]), wd
 
 
 def main(bases: tuple[str, ...] = ("add", "gate"), tag: str = "") -> None:
@@ -133,14 +144,14 @@ def main(bases: tuple[str, ...] = ("add", "gate"), tag: str = "") -> None:
             chk = fz["gain"] * (fz["lin"] * (1.0 + fz["T"].float()).prod(1) + fz["lin_b"]) + fz["bias"]
             print("gate reconstruction max abs error:", float((chk - fz["logits"]).abs().max()), flush=True)
             kinds += ["opstrength"]
-        L = {}
+        L, wds = {}, {}
         for k in kinds:
-            L[k] = np.stack([fit_eval(k, fz, rows_for(u_all), n_users, s)[0] for s in range(3)])
+            L[k], wds[k] = tuned(k, fz, rows_for(u_all), n_users)
         for k in ("field", "lowrank"):
-            L[k + "_shuffled"] = np.stack([fit_eval(k, fz, rows_for(u_shuf), n_users, s)[0] for s in range(3)])
+            L[k + "_shuffled"], wds[k + "_shuffled"] = tuned(k, fz, rows_for(u_shuf), n_users)
         out = {}
         for k, v in L.items():
-            row = dict(loss=float(v.mean()))
+            row = dict(loss=float(v.mean()), l2=wds[k])
             if k != "shared":
                 row["vs_shared"] = paired_bootstrap(L["shared"], v, B=1000, groups=test_groups).as_dict()
             out[k] = row
@@ -154,9 +165,9 @@ def main(bases: tuple[str, ...] = ("add", "gate"), tag: str = "") -> None:
             half = rng.random(len(u_all)) < 0.5
             s_half = []
             for hm in (half, ~half):
-                _, m = fit_eval("opstrength", fz, rows_for(u_all, hm), n_users, 0)
+                _, m, _ = fit_eval("opstrength", fz, rows_for(u_all, hm), n_users, 0, wd=wds["opstrength"])
                 s_half.append(1.0 + m.su.weight.detach().numpy()[1:, 0])
-            _, m = fit_eval("opstrength", fz, rows_for(u_all), n_users, 0)
+            _, m, _ = fit_eval("opstrength", fz, rows_for(u_all), n_users, 0, wd=wds["opstrength"])
             s_full = 1.0 + m.su.weight.detach().numpy()[1:, 0]
             out["operator_strength"] = dict(mean=float(s_full.mean()), sd=float(s_full.std()), min=float(s_full.min()), max=float(s_full.max()),
                                             split_half_r=float(np.corrcoef(s_half[0], s_half[1])[0, 1]), n_raters=int(len(s_full)))

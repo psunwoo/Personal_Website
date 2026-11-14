@@ -21,10 +21,13 @@ $$z=\Big[\prod_j m(x_j)\Big]\,\frac1N\sum_i W\phi(x_i),\qquad m(x)=1+2\tanh\delt
 
 **Per-user couplings (brief §3.3), tested for the first time.**
 
-- A rater-specific field on the concept nodes gains +0.127 nats per rating on held-out comments; adding a rater-specific response strength, +0.157; adding a rank-4 personal readout of content, +0.218. With rater identities shuffled the gain is 0.000.
-- On the same scale, operators gain +0.032. **Personalisation is four to seven times larger than the best combination rule.**
-- About 20 ratings from a person already match the operator gain; 50 double it.
-- Operator strength is a reliable personal trait (split-half $r$ = 0.80–0.85 across 62 raters) but explains almost nothing (+0.001 to +0.003).
+- A rater-specific field on the concept nodes gains +0.192 nats per rating on held-out comments; adding a rater-specific response strength, +0.213; adding a rank-4 personal readout of content, +0.227. With rater identities shuffled the gain is 0.000. Training everything jointly gives +0.237.
+- On the same scale, operators gain +0.032. **Personalisation is six to seven times larger than the best combination rule.**
+- Most of it is the field (84%), which does not depend on content. The content-dependent personal part is +0.035, about the size of the operator effect.
+- A new person, fitted from scratch with a prior learned from other people: 10 ratings gain +0.065, 20 gain +0.105, 50 gain +0.157.
+- Rater fields are not low-dimensional (about 9 effective dimensions of 28), but an 8-dimensional user space is ahead of the full field in point estimate when a person has 20 ratings or fewer.
+
+Two numbers reported after the first version of this pass were wrong and are corrected here: the personal layers had been over-regularised, which understated the field (+0.127) and overstated the content readout (+0.060); and the reliability of per-rater operator strength is not robust (0.79 with per-node factors, 0.40 with scalar factors).
 
 ![Onboarding](results/figs/personal_onboarding.png)
 
@@ -125,59 +128,75 @@ GoEmotions: 57,921 Reddit comments, 3–5 raters each, target = the comment's di
 | whole comment through MPNet | 2.115 | 45.6% | −0.1292 [−0.1459, −0.1135] |
 
 - Forward-ordered factors are the best model here: +0.019 [+0.011, +0.026] over the pair term and +0.013 [+0.003, +0.023] over Deep Sets. Over the commuting gate the difference is +0.013 [−0.003, +0.026], not significant.
-- **The factors are not negators.** With one scalar factor per word, the lowest factors belong to emotion words: glad 0.60, appreciate 0.61, amazing 0.61, horrible 0.64, awesome 0.65, sorry 0.65, love 0.66. Neutral words sit at 1.00–1.06. My reading, not tested directly: this is saturation. A strong emotion word already decides the label, so further evidence must count for less than additively.
+- **The factors are not negators.** With one scalar factor per word, the lowest factors belong to emotion words: glad 0.60, appreciate 0.61, amazing 0.61, horrible 0.64, awesome 0.65, sorry 0.65, love 0.66. Neutral words sit at 1.00–1.06. My reading was saturation: a strong emotion word already decides the label, so further evidence must count for less than additively.
+- **Direct test of that reading: partly supported.** Grouping held-out comments by the number of words with factor below 0.85 (one seed of each model):
+
+| strong emotion words | share of comments | additive model's overconfidence in its top label | gain of the scalar gate | share of the total gain |
+|---|---|---|---|---|
+| 0 | 44% | +0.019 [+0.006, +0.031] | +0.015 [+0.009, +0.020] | 23% |
+| 1 | 39% | +0.036 [+0.025, +0.049] | +0.029 [+0.021, +0.036] | 40% |
+| 2 | 13% | +0.069 [+0.049, +0.089] | +0.022 [+0.003, +0.043] | 10% |
+| 3 or more | 4% | +0.212 [+0.176, +0.247] | +0.189 [+0.109, +0.277] | 26% |
+
+  The additive model becomes steadily more overconfident as strong words accumulate, and the gate's gain per comment is about ten times larger with three or more. But such comments are rare; 63% of the gain comes from comments with none or one, where the gate acts as a tempering of confidence rather than as saturation between words. The grouping uses the gate's own factors, so this is not an independent test.
 - Agreement with the treebank's factors over 691 shared words is moderate (Spearman 0.43), and the two lists of 20 lowest factors share one word. So the *form* (one-body multiplicative factors, acting forward) carries over to categorical emotions; the *list* does not.
 - With one factor per emotion node the factors are entangled with the sign of each node's baseline logit and cannot be read as damping or amplification; I do not interpret them.
 - Isolated word embeddings beat the whole-comment sentence embedding here by a wide margin. Emotion labels on short comments are largely keyword-driven.
 
 ## 7. Per-user couplings
 
-GoEmotions is the only open dataset here with rater identities: 207,542 ratings by 82 raters, of whom 62 have at least 500 ratings and get their own parameters. A rating is (comment, rater, label distribution). The shared model is frozen; a rater-specific layer is fitted on the training comments and scored on ratings of held-out comments (20,463 test ratings, intervals clustered by comment).
+GoEmotions is the only open dataset here with rater identities: 207,542 ratings by 82 raters, of whom 62 have at least 500 ratings and get their own parameters. A rating is (comment, rater, label distribution). The shared model is frozen; a rater-specific layer is fitted on the training comments and scored on ratings of held-out comments (20,463 test ratings, intervals clustered by comment). The L2 strength on the personal parameters is chosen on validation ratings.
 
 | layer on top of the shared logits $F(S)$ | parameters per rater | held-out gain, nats per rating |
 |---|---|---|
 | none (global recalibration only) | 0 | 0 (cross-entropy 2.054) |
-| field: $F + b_u$ | 28 | +0.1269 [+0.1225, +0.1314] |
-| + response strength: $(a+a_u)F + b_u$ | 56 | +0.1575 [+0.1514, +0.1632] |
-| + personal readout of content: $+\,U_u V A(S)$, rank 4 | 168 | +0.2176 [+0.2082, +0.2267] |
+| field: $F + b_u$ | 28 | +0.1915 [+0.1833, +0.1996] |
+| + response strength: $(a+a_u)F + b_u$ | 56 | +0.2130 [+0.2045, +0.2211] |
+| + personal readout of content: $+\,U_u V A(S)$, rank 4 | 168 | +0.2269 [+0.2170, +0.2365] |
 | field, rater identities shuffled | 28 | −0.0002 [−0.0006, +0.0002] |
 | rank-4 readout, rater identities shuffled | 168 | −0.0008 [−0.0016, −0.0001] |
+| everything trained jointly on ratings (shared model 2.055) | 168 | +0.2372 [+0.2269, +0.2470] |
 
 For comparison on the same scale, replacing the shared additive model by the shared gated one gains +0.032.
 
-- Each step is significant: response strength over field +0.031 [+0.028, +0.033]; content readout over response strength +0.060 [+0.055, +0.065].
-- The spread of the field across raters is largest for approval, neutral, annoyance, disapproval and realization (standard deviation 0.26–0.32 in logit units).
-- **Operator strength per rater.** Letting each rater scale the operators, $m_u = 1 + s_u(m-1)$, adds +0.0035 [+0.0022, +0.0046] with per-node factors and +0.0011 [+0.0007, +0.0015] with scalar factors. $s_u$ has standard deviation 0.07–0.09 and split-half reliability 0.85 and 0.80. So it is a stable trait with a negligible effect.
+- Each step is significant, but the steps after the field are small: response strength over field +0.021 [+0.018, +0.025]; content readout over response strength +0.014 [+0.010, +0.018].
+- Joint training adds about +0.01 over the two-stage fit, so the frozen shared model was not holding the result back.
+- The field varies most across raters for curiosity, approval, disapproval and realization (standard deviation 0.8–1.0 in logit units).
+- **Operator strength per rater.** Letting each rater scale the operators, $m_u = 1 + s_u(m-1)$, adds +0.0011 [+0.0003, +0.0020] with per-node factors and +0.0006 [+0.0002, +0.0010] with scalar factors. Its split-half reliability across raters is 0.79 and 0.40 respectively. So it is small, and not robustly a stable trait.
 
-**How many ratings are needed.** Each modelled rater's training ratings are cut to $n$ (median available: 2,348).
+**User space.** On 47 development raters, the fitted fields have about 9 effective dimensions (participation ratio 9.5; the top 1 / 4 / 8 directions carry 22% / 56% / 74% of the variance). Constraining the field to $b_u = B e_u$ with $e_u \in \mathbb R^k$ recovers 41% / 57% / 70% / 87% of the full field's validation gain for $k$ = 1 / 2 / 4 / 8. People do not fall on a few axes.
 
-| ratings from the person | field | + response strength | + content readout |
-|---|---|---|---|
-| 10 | +0.009 | +0.019 | +0.025 |
-| 20 | +0.015 | +0.031 | +0.044 |
-| 50 | +0.040 | +0.066 | +0.082 |
-| 100 | +0.059 | +0.091 | +0.114 |
-| 200 | +0.080 | +0.115 | +0.147 |
-| 500 | +0.108 | +0.142 | +0.183 |
-| all | +0.127 | +0.158 | +0.218 |
+**Cold start.** 15 raters are held out entirely. A new rater contributes $n$ ratings; only their $e_u$ (or $b_u$) is fitted, by MAP with a Gaussian prior whose width comes from the development raters and whose strength is chosen by simulating the same cold start on development raters. No personal validation set is used. Scored on the new raters' ratings of comments never used in training.
 
-All intervals exclude zero (widths about ±0.003 to ±0.010).
+| ratings from the new person | full field (28 numbers) | 8-dim user space | 2-dim user space | 1-dim user space |
+|---|---|---|---|---|
+| 5 | +0.021 [−0.035, +0.055] | +0.048 [−0.012, +0.086] | +0.049 [−0.018, +0.091] | +0.039 [−0.019, +0.075] |
+| 10 | +0.065 [+0.039, +0.084] | +0.091 [+0.063, +0.111] | +0.086 [+0.063, +0.104] | +0.071 [+0.048, +0.088] |
+| 20 | +0.105 [+0.081, +0.124] | +0.119 [+0.095, +0.139] | +0.108 [+0.092, +0.125] | +0.097 [+0.082, +0.111] |
+| 50 | +0.157 [+0.142, +0.173] | +0.155 [+0.142, +0.168] | +0.124 [+0.113, +0.136] | +0.109 [+0.099, +0.119] |
+| 100 | +0.189 [+0.178, +0.200] | +0.170 [+0.159, +0.181] | +0.130 [+0.119, +0.140] | +0.113 [+0.102, +0.122] |
+| 200 | +0.211 [+0.199, +0.221] | +0.179 [+0.168, +0.190] | +0.132 [+0.122, +0.142] | +0.114 [+0.105, +0.123] |
+
+- Five ratings are not enough for a reliable gain. Ten ratings give twice the operator gain; fifty give five times.
+- The user space is ahead at 20 ratings or fewer and behind from 50 on. The differences at small $n$ are within the intervals, which I did not test pairwise.
+- Driving response strength and content readout from the same $e_u$ did worse than the field alone at every $n$.
 
 Caveats specific to this section:
 
-- A field on label logits mixes two things I cannot separate: how a person feels and how a person uses the label set. The content-dependent part (+0.060) is the better evidence for "reads content differently".
-- The shared model was not co-trained with the personal layers, which understates what joint training could reach.
-- Early stopping for small $n$ used the rater's full validation ratings, which is optimistic for a real new user.
+- A field on label logits mixes two things I cannot separate: how a person feels and how a person uses the label set. Since the field carries 84% of the gain, most of the measured personalisation could be label-use style. The content-dependent part (+0.035) is the cleaner evidence for "reads content differently", and it is small.
+- The 15 new raters are one random draw; intervals are over their ratings, not over raters.
 - These are paid annotators labelling Reddit comments, not users reacting to rendered concepts.
 - That annotators differ systematically is established in the annotation literature (work on annotator disagreement and on modelling individual annotators); I cite this from memory and have not verified specific references.
+- An earlier naive onboarding curve (`e4c_onboarding.json`: plain gradient descent with a fixed penalty and a personal validation set) is superseded by the cold-start table and understates small-$n$ gains.
 
 ## 8. What this means for the engine
 
-1. **Personalise first.** Per-user couplings are worth several times more than any combination rule tested, and the simplest form (a per-user field, 28 numbers) already delivers most of it. This is the strongest quantitative support so far for the decision to make the grammar personal.
-2. **Onboarding cost is low.** A few dozen reactions from a person are enough to beat the best shared model.
-3. **Combination rule.** Combine concepts additively, then apply one-body multiplicative factors acting forward. For valence a short list of about ten negators gives roughly half of the available gain and can be built once and reused; a generic pair term adds nothing.
-4. **Do not over-generalise the list.** It is specific to valence; for categorical emotions the multiplicative effect is saturation by emotion words; for arousal, dominance, concreteness and image regions there is none.
-5. **The remaining gap is in the descriptors.** On sentiment a sentence encoder still explains about five more points of variance than any set model here. The ceiling is set by the one-body descriptors and by lexicalised units, not by the combination rule.
+1. **Personalise first.** Per-user couplings are worth six to seven times more than any combination rule tested, and the simplest form (a per-user field, one number per concept node) delivers 84% of it. This is the strongest quantitative support so far for the decision to make the grammar personal.
+2. **Onboarding cost is low.** Ten reactions from a new person, with a prior learned from other people, already beat the best shared model by twice the operator gain. A low-dimensional user space is worth having only for the first twenty or so reactions.
+3. **What is personal is mostly the baseline.** The field does not depend on content. How content is read differs between people by about as much as operators matter. In this dataset the field may largely be label-use style; whether it reflects felt differences can only be settled with reactions from real users of the engine.
+4. **Combination rule.** Combine concepts additively, then apply one-body multiplicative factors acting forward. For valence a short list of about ten negators gives roughly half of the available gain and can be built once and reused; a generic pair term adds nothing.
+5. **Do not over-generalise the list.** It is specific to valence; for categorical emotions the multiplicative effect is saturation by emotion words; for arousal, dominance, concreteness and image regions there is none.
+6. **The remaining gap is in the descriptors.** On sentiment a sentence encoder still explains about five more points of variance than any set model here. The ceiling is set by the one-body descriptors and by lexicalised units, not by the combination rule.
 
 ## 9. Caveats
 
@@ -190,8 +209,7 @@ Caveats specific to this section:
 
 ## 10. Open items
 
-1. Affection ∩ Visual Genome (and EMOTIC): still the only route to an object-level image test, and Affection may also carry annotator identities for a second personalisation test. Both need your access request.
+1. Affection ∩ Visual Genome (and EMOTIC): still the only route to an object-level image test, and Affection may also carry annotator identities for a second personalisation test (unconfirmed). Both need your access request.
 2. A dedicated repository: I cannot create one from this session. Everything is on branch `claude/ml-beyond-llm-spike-7eblny` of `Personal_Website`.
-3. Whether the saturation reading of section 6 is right needs a direct test (gain as a function of the number of emotion words in a comment).
-4. Joint training of shared and personal parts, and a cold-start protocol without a personal validation set.
-5. No GPU was used; the remaining 100K EmoSet images were not extracted, since nothing in this pass depends on them.
+3. Whether a personal field is feeling or label use: needs reactions from real users, ideally with a design that fixes the response format.
+4. Personalisation has been tested on one dataset only.
