@@ -79,7 +79,7 @@ Words are ranked by $|m-1|$ in the unrestricted model (words seen at least 25 ti
 Learned factors of the top-ranked words: never −0.06, without −0.02, n't 0.04, less 0.09, not 0.10, nor 0.15, no 0.22, need 0.28, hardly 0.30, hate 0.34, rarely 0.40, devoid 0.45, none 0.46, barely 0.47, lack 0.49, only 0.53, neither 0.56; huge 1.47.
 
 - **A sparse head and a diffuse tail.** Ten words give about half of the gain; going from 20 to 200 words adds only another 14 points; the last 37% needs small factors on thousands of words. The intervals on the restricted fits are wide (for ten words, 1% to 88% of the full gain), so "half" is a point estimate.
-- This corrects the impression left by the first pass, where the top words looked like the whole effect. The strong negators are close to annihilators ($m \approx 0$): they reset the pooled value to the baseline rather than flip its sign.
+- This corrects the impression left by the first pass, where the top words looked like the whole effect. The strong negators are close to annihilators ($m \approx 0$): they reset the pooled value to the baseline rather than flip its sign. That negation is not a sign flip is known for this treebank (Zhu et al., ACL 2014, who found that neither reversal nor a constant shift models negators well).
 - Switching operators off in the fitted model *without* refitting gives a similar picture (top 10: 37%, top 500: 56%).
 
 ## 4. Do operators transfer across datasets?
@@ -186,7 +186,7 @@ Caveats specific to this section:
 - A field on label logits mixes two things I cannot separate: how a person feels and how a person uses the label set. Since the field carries 84% of the gain, most of the measured personalisation could be label-use style. The content-dependent part (+0.035) is the cleaner evidence for "reads content differently", and it is small.
 - The 15 new raters are one random draw; intervals are over their ratings, not over raters.
 - These are paid annotators labelling Reddit comments, not users reacting to rendered concepts.
-- That annotators differ systematically is established in the annotation literature (work on annotator disagreement and on modelling individual annotators); I cite this from memory and have not verified specific references.
+- That annotators differ systematically, and that modelling each annotator on a shared representation helps, is established (Davani et al., TACL 2022; verified in `PRIOR_ART.md`, section 2b). What is specific here is the size relative to combination rules and the cold-start curve.
 - An earlier naive onboarding curve (`e4c_onboarding.json`: plain gradient descent with a fixed penalty and a personal validation set) is superseded by the cold-start table and understates small-$n$ gains.
 
 ## 8. What this means for the engine

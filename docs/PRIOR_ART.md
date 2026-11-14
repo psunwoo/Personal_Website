@@ -37,6 +37,15 @@ Checked 2026-11-13 by web search. Status reflects what the search results showed
 | Gordon, Banerjee, Koch-Janusz, Ringel, PRL 126 (2021), arXiv 2012.01447 | OK | Variables kept by information-bottleneck compression correspond to the operators with lowest scaling dimension. Proven for systems described by a field theory; carrying it over to scenes is an analogy. |
 | Achlioptas et al., Affection (CVPR 2023, arXiv 2210.01946) | OK | Human emotional reactions and explanations for 85,007 real-world images drawn from MS-COCO, Visual Genome, Flickr30k Entities and others. These images already carry human object annotations, which ArtEmis paintings do not. |
 
+## 2b. Prior art for the second pass (operators, personal couplings), checked 2026-11-14
+
+| Item | Status | Why it matters |
+|---|---|---|
+| Socher et al., "Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank", EMNLP 2013 (aclanthology D13-1170) | OK | Source of the treebank (215,154 phrases, 11,855 sentences). Its model composes children with a tensor, i.e. a second-order term, and its headline claim is handling negation and its scope. That composition matters on this data is therefore known; the body-order framing and the gated additive model are what this spike adds. |
+| Zhu, Guo, Mohammad, Kiritchenko, "An Empirical Study on the Effect of Negation Words on Sentiment", ACL 2014, pp. 304–313 (P14-1029) | OK | Tests on the same treebank whether negators reverse the sign of sentiment or shift it by a constant, and finds both heuristics capture little. Our finding that negators act as multiplicative damping toward the baseline ($m \approx 0$, never negative) belongs to this line; that negation is not a sign flip is not new. I did not read their proposed model. |
+| Demszky et al., "GoEmotions: A Dataset of Fine-Grained Emotions", ACL 2020, pp. 4040–4054 (arXiv 2005.00547) | OK | 58k Reddit comments, 27 emotions plus neutral. Rater details were not in the search results; the counts in RESULTS_2.md come from the released raw file itself. |
+| Davani, Díaz, Prabhakaran, "Dealing with Disagreements: Looking Beyond the Majority Vote in Subjective Annotations", TACL 10:92–110 (2022) | OK | Trains one prediction head per annotator on a shared representation and finds it matches or beats majority-vote training. Per-annotator modelling on a shared model is therefore established; our per-rater field is a minimal instance of it, and the cold-start measurement is the part aimed at the venture. |
+
 ## 3. Candidate data
 
 | Dataset | Status | Size and content | Access and licence |
@@ -51,6 +60,11 @@ Checked 2026-11-13 by web search. Status reflects what the search results showed
 None of the data hosts is reachable from the current cloud environment (see PROPOSAL.md, section 5).
 
 ## 4. Sources
+
+- Socher et al. 2013: https://aclanthology.org/D13-1170.pdf
+- Zhu et al. 2014: https://aclanthology.org/P14-1029/
+- GoEmotions: https://arxiv.org/pdf/2005.00547
+- Davani et al. 2022: https://aclanthology.org/2022.tacl-1.6
 
 - LeCun position paper: https://www.mafr.fr/en/article/a-path-towards-autonomous-machine-intelligence/
 - I-JEPA: https://openaccess.thecvf.com/content/CVPR2023/html/Assran_Self-Supervised_Learning_From_Images_With_a_Joint-Embedding_Predictive_Architecture_CVPR_2023_paper.html

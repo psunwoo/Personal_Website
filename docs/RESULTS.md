@@ -135,7 +135,7 @@ About 36% of the parent's variance is not carried by the children's sentiment at
 - This is the one test bed that passes. The caveat: there is no noise ceiling for these labels, so headroom is measured to the best any-order reference, which is easier to reach than a noise ceiling.
 - Third order adds little beyond second (+0.008). The series converges fast.
 - The run without the word-sentiment feature was killed for lack of memory and has not been repeated, so I cannot say how much of the gain depends on that feature.
-- Prior art: that composition matters on this dataset is the classic result of Socher et al. (2013), whose model uses a bilinear (second-order) composition. Cited from memory, not re-verified.
+- Prior art: that composition matters on this dataset is the classic result of Socher et al. (EMNLP 2013), whose model composes children with a tensor (a second-order term) and whose headline claim is handling negation. Verified in `PRIOR_ART.md`, section 2b.
 
 ### 3.4 Where the interaction sits
 
