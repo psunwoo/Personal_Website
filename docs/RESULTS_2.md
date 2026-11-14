@@ -162,7 +162,7 @@ For comparison on the same scale, replacing the shared additive model by the sha
 
 - Each step is significant, but the steps after the field are small: response strength over field +0.021 [+0.018, +0.025]; content readout over response strength +0.014 [+0.010, +0.018].
 - Joint training adds about +0.01 over the two-stage fit, so the frozen shared model was not holding the result back.
-- The field varies most across raters for curiosity, approval, disapproval and realization (standard deviation 0.8–1.0 in logit units).
+- The field varies most across raters for curiosity (standard deviation 1.14 in logit units), love, realization, approval, disapproval and neutral (0.87–0.90), and least for admiration (0.47), excitement, sadness, surprise, relief, fear, amusement and joy (0.55–0.62). The basic emotions are the most shared; the appraisal-like labels are the most personal. The same pattern appears in the second dataset below.
 - **Operator strength per rater.** Letting each rater scale the operators, $m_u = 1 + s_u(m-1)$, adds +0.0011 [+0.0003, +0.0020] with per-node factors and +0.0006 [+0.0002, +0.0010] with scalar factors. Its split-half reliability across raters is 0.79 and 0.40 respectively. So it is small, and not robustly a stable trait.
 
 **User space.** On 47 development raters, the fitted fields have about 9 effective dimensions (participation ratio 9.5; the top 1 / 4 / 8 directions carry 22% / 56% / 74% of the variance). Constraining the field to $b_u = B e_u$ with $e_u \in \mathbb R^k$ recovers 41% / 57% / 70% / 87% of the full field's validation gain for $k$ = 1 / 2 / 4 / 8. People do not fall on a few axes.

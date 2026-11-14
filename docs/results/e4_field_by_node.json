@@ -1,0 +1,142 @@
+[
+ {
+  "node": "curiosity",
+  "field_sd": 1.136002779006958,
+  "base_rate": 0.03696544095873833
+ },
+ {
+  "node": "love",
+  "field_sd": 0.899684488773346,
+  "base_rate": 0.03113715723156929
+ },
+ {
+  "node": "realization",
+  "field_sd": 0.8824155926704407,
+  "base_rate": 0.03172877058386803
+ },
+ {
+  "node": "approval",
+  "field_sd": 0.8738833069801331,
+  "base_rate": 0.06859241425991058
+ },
+ {
+  "node": "disapproval",
+  "field_sd": 0.8714953064918518,
+  "base_rate": 0.04552913084626198
+ },
+ {
+  "node": "neutral",
+  "field_sd": 0.8711426258087158,
+  "base_rate": 0.26561370491981506
+ },
+ {
+  "node": "remorse",
+  "field_sd": 0.8438403010368347,
+  "base_rate": 0.009494888596236706
+ },
+ {
+  "node": "desire",
+  "field_sd": 0.786473274230957,
+  "base_rate": 0.014025915414094925
+ },
+ {
+  "node": "confusion",
+  "field_sd": 0.7849763631820679,
+  "base_rate": 0.029334677383303642
+ },
+ {
+  "node": "optimism",
+  "field_sd": 0.7799657583236694,
+  "base_rate": 0.031100107356905937
+ },
+ {
+  "node": "pride",
+  "field_sd": 0.7514234781265259,
+  "base_rate": 0.004578538239002228
+ },
+ {
+  "node": "annoyance",
+  "field_sd": 0.7434666752815247,
+  "base_rate": 0.05210580304265022
+ },
+ {
+  "node": "grief",
+  "field_sd": 0.730436384677887,
+  "base_rate": 0.0023731314577162266
+ },
+ {
+  "node": "gratitude",
+  "field_sd": 0.7226893901824951,
+  "base_rate": 0.0443277470767498
+ },
+ {
+  "node": "caring",
+  "field_sd": 0.7126207947731018,
+  "base_rate": 0.022496026009321213
+ },
+ {
+  "node": "disgust",
+  "field_sd": 0.6946843266487122,
+  "base_rate": 0.01922558806836605
+ },
+ {
+  "node": "disappointment",
+  "field_sd": 0.6771295070648193,
+  "base_rate": 0.030897371470928192
+ },
+ {
+  "node": "nervousness",
+  "field_sd": 0.6749435067176819,
+  "base_rate": 0.0059959255158901215
+ },
+ {
+  "node": "embarrassment",
+  "field_sd": 0.6601245999336243,
+  "base_rate": 0.009056858718395233
+ },
+ {
+  "node": "anger",
+  "field_sd": 0.6392239332199097,
+  "base_rate": 0.03144538030028343
+ },
+ {
+  "node": "joy",
+  "field_sd": 0.6241279244422913,
+  "base_rate": 0.028940493240952492
+ },
+ {
+  "node": "amusement",
+  "field_sd": 0.6164384484291077,
+  "base_rate": 0.03656364977359772
+ },
+ {
+  "node": "fear",
+  "field_sd": 0.6157581806182861,
+  "base_rate": 0.011722268536686897
+ },
+ {
+  "node": "relief",
+  "field_sd": 0.6071898341178894,
+  "base_rate": 0.004903245717287064
+ },
+ {
+  "node": "surprise",
+  "field_sd": 0.6018527150154114,
+  "base_rate": 0.021277017891407013
+ },
+ {
+  "node": "sadness",
+  "field_sd": 0.5513189435005188,
+  "base_rate": 0.024860316887497902
+ },
+ {
+  "node": "excitement",
+  "field_sd": 0.5466030836105347,
+  "base_rate": 0.020250806584954262
+ },
+ {
+  "node": "admiration",
+  "field_sd": 0.47076675295829773,
+  "base_rate": 0.06545770168304443
+ }
+]
