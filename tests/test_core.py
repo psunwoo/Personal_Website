@@ -36,7 +36,7 @@ def test_permutation_and_padding_invariance():
 
 def test_second_order_models_start_at_the_additive_model():
     x, m = _batch()
-    for kind in ("poly2", "poly3", "pair", "gate"):
+    for kind in ("poly2", "poly3", "pair", "gate", "scope_l", "scope_r", "gate_poly2", "sgate"):
         torch.manual_seed(1)
         f = SetModel(7, 3, kind).eval()
         z = f(x, m)
@@ -102,3 +102,17 @@ def test_cca_recovers_shared_directions():
     c = CCA(X[:4000], Y[:4000])
     rho = c.heldout_rho(X[4000:], Y[4000:])
     assert (rho[:3] > 0.85).all() and (np.abs(rho[3:]) < 0.1).all(), rho
+
+
+def test_scoped_operator_acts_on_one_side_only():
+    """A damping factor on the first object changes the others' contributions under scope_l, not under scope_r."""
+    torch.manual_seed(3)
+    x = torch.randn(1, 3, 7)
+    x[0, :, -2] = torch.tensor([0.0, 0.5, 1.0])  # positions
+    m = torch.ones(1, 3, dtype=torch.bool)
+    for kind, changes in (("scope_l", True), ("scope_r", False)):
+        f = SetModel(7, 2, kind).eval()
+        base = f(x, m)
+        orig = f.factors
+        f.factors = lambda xx, mm, o=orig: o(xx, mm) * torch.tensor([0.0, 1.0, 1.0]).view(1, 3, 1)  # object 0 becomes a full damper
+        assert (not torch.allclose(f(x, m), base, atol=1e-6)) == changes, kind

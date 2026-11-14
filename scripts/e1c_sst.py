@@ -75,6 +75,8 @@ def main() -> None:
     ap.add_argument("--seeds", type=int, default=3)
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--tag", default="", help="suffix for output files, so a run does not overwrite another")
+    ap.add_argument("--no-tune", action="store_true")
+    ap.add_argument("--no-whole", action="store_true", help="skip the whole-phrase encoder reference")
     args = ap.parse_args()
     torch.set_num_threads(args.threads)
     t0 = time.time()
@@ -93,26 +95,29 @@ def main() -> None:
     idx["train"] = rng.permutation(idx["train"])[: args.max_train]
     idx["test"] = rng.permutation(idx["test"])[: args.max_test]
     idx["validation"] = rng.permutation(idx["validation"])[:8000]
-    data = sst.phrase_sets(tab, dic, feats)
-    tr, va, te = (data.subset(idx[s]) for s in ("train", "validation", "test"))
+    # build features only for the phrases that are used (the full table would need about 3 GB)
+    tr, va, te = (sst.phrase_sets(tab.iloc[idx[s]].reset_index(drop=True), dic, feats) for s in ("train", "validation", "test"))
+    data = te
     kinds = args.kinds.split(",")
     print(f"[sst {feats}] train {len(tr)} val {len(va)} test {len(te)} d={data.X.shape[-1]}", flush=True)
     kw = dict(batch=512, max_epochs=40, patience=5)
-    r = holdout(tr, va, te, kinds, seeds=args.seeds, grid=GRID, **kw)
+    r = holdout(tr, va, te, kinds, seeds=args.seeds, grid=GRID, tune=not args.no_tune, **kw)
     losses = {k: v[:, :, 0] for k, v in r["losses"].items()}
-    E = embed_texts(tab.phrase.tolist(), "mpnet")  # any-order reference: the phrase encoded as one string
-    wd = SetData(E[:, None, :], np.ones((len(E), 1), dtype=bool), data.y, "reg", data.names)
-    losses["whole_mpnet"] = holdout(wd.subset(idx["train"]), wd.subset(idx["validation"]), wd.subset(idx["test"]), ["add"],
-                                    seeds=args.seeds, grid=GRID, **kw)["losses"]["add"][:, :, 0]
+    if not args.no_whole:
+        E = embed_texts(tab.phrase.tolist(), "mpnet")  # any-order reference: the phrase encoded as one string
+        yall = tab.label.to_numpy(dtype=np.float32)[:, None]
+        wd = SetData(E[:, None, :], np.ones((len(E), 1), dtype=bool), yall, "reg", data.names)
+        losses["whole_mpnet"] = holdout(wd.subset(idx["train"]), wd.subset(idx["validation"]), wd.subset(idx["test"]), ["add"],
+                                        seeds=args.seeds, grid=GRID, tune=not args.no_tune, **kw)["losses"]["add"][:, :, 0]
     refs = [k for k in ("settrans", "deepsets", "whole_mpnet") if k in losses]
-    ceil_key = min(refs, key=lambda k: losses[k].mean())
-    Lceil = float(losses[ceil_key].mean())
+    ceil_key = min(refs, key=lambda k: losses[k].mean()) if refs else None
+    Lceil = float(losses[ceil_key].mean()) if refs else float("nan")
     size = tab["size"].to_numpy()[idx["test"]]
     summ = dict(features=feats, n=dict(train=len(tr), val=len(va), test=len(te)), ceiling_model=ceil_key, ceiling_mse=Lceil,
                 hp=r["hp"], models={}, by_size={})
     for k, L in losses.items():
         row = dict(mse=float(L.mean()), r2=float(1 - L.mean()))
-        if k != "add":
+        if k != "add" and "add" in losses:
             d = paired_bootstrap(losses["add"], L, B=2000)
             row["vs_add"] = {**d.as_dict(), **pass_rule(d, float(losses["add"].mean()), Lceil)}
         summ["models"][k] = row
@@ -122,7 +127,7 @@ def main() -> None:
         m = (size >= lo) & (size <= hi)
         summ["by_size"][f"{lo}-{hi}"] = dict(n=int(m.sum()), **{k: float(L[:, m].mean()) for k, L in losses.items()},
                                             **{f"d_{k}": paired_bootstrap(losses["add"][:, m], losses[k][:, m], B=1000).as_dict()
-                                               for k in losses if k != "add"})
+                                               for k in losses if k != "add" and "add" in losses})
     summ["sec"] = round(time.time() - t0, 1)
     tag = "+".join(feats) + (f"_{args.tag}" if args.tag else "")
     Path(f"docs/results/e1c_sst_sets_{tag}.json").write_text(json.dumps(summ, indent=1))

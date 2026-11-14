@@ -1,5 +1,7 @@
 # Results — first pass
 
+> Follow-up: the operator/particle structure found here, and per-user couplings, are tested in `RESULTS_2.md`. One statement below is refined there: the operator effect is not confined to a few words (a short list gives about half of it).
+
 Run on 2026-11-13, CPU only (4 vCPU, no GPU was available). Every number below is held-out, with a 95% interval from a paired bootstrap over items and seeds. Raw outputs are in `docs/results/`; `scripts/make_tables.py` regenerates the tables and `scripts/make_figures.py` the figures.
 
 ## 1. Verdict

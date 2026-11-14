@@ -20,19 +20,35 @@ deepsets  any          rho(A), rho an MLP
 settrans  any          self-attention over objects
 gate      (see below)  none; the additive logits are multiplied by prod_i m(x_i)
 
+scope_l   (see below)  as gate, but an operator acts only on objects that come after it
+scope_r   (see below)  mirror image: an operator acts only on objects that come before it
+gate_poly2             gate plus the ACE degree-2 term: is pair structure left once operators are in?
+fgate                  additive, times a *fixed* per-object factor read from the last feature
+mgate                  gate, but only objects whose last feature is 1 may act as operators
+sgate                  gate with one scalar factor per object, shared by all concept nodes, acting on
+                       the deviation from the baseline:  z = b + [prod_j m(x_j)] W A.  A factor near 0
+                       pulls every node back to its base rate.
+
 "gate" is the operator/particle hypothesis: every object carries a value phi(x_i) and,
 separately, a multiplicative factor m(x_i) = 1 + 2 tanh(delta(x_i)) acting on the pooled value.
 It has no pair parameters at all, only one-body functions, yet a single element can flip or
 damp the total (negation, intensifiers).  Formally it contains all orders, but in a rigid,
 factorised form.
+
+In "gate" the factors commute: the total is multiplied by all of them, wherever they sit.  The
+scoped variants make the product ordered,
+
+    z = (1/N) sum_i  W phi(x_i) * prod_{j before i} m(x_j)        (scope_l)
+
+using the object's position feature (index `pos_index`, default -2) as the ordering key.
 """
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
 
-KINDS = ("add", "poly2", "poly3", "pair", "deepsets", "settrans", "gate")
-BODY_ORDER = {"add": 1, "poly2": 2, "pair": 2, "poly3": 3, "deepsets": None, "settrans": None, "gate": None}
+KINDS = ("add", "poly2", "poly3", "pair", "deepsets", "settrans", "gate", "scope_l", "scope_r", "gate_poly2", "fgate", "mgate", "sgate")
+BODY_ORDER = {"add": 1, "poly2": 2, "pair": 2, "poly3": 3}  # the other kinds are not truncated at a fixed order
 
 
 def mlp(d_in: int, hidden: int, d_out: int, dropout: float = 0.0) -> nn.Sequential:
@@ -43,16 +59,16 @@ def mlp(d_in: int, hidden: int, d_out: int, dropout: float = 0.0) -> nn.Sequenti
 
 class SetModel(nn.Module):
     def __init__(self, d_in: int, n_out: int, kind: str = "add", K: int = 64, hidden: int = 128,
-                 rank: int = 16, dropout: float = 0.0):
+                 rank: int = 16, dropout: float = 0.0, pos_index: int = -2):
         super().__init__()
         assert kind in KINDS, kind
-        self.kind, self.n_out = kind, n_out
+        self.kind, self.n_out, self.pos_index = kind, n_out, pos_index
         self.phi = mlp(d_in, hidden, K, dropout)
         self.lin = nn.Linear(K, n_out)
         self.size = nn.Sequential(nn.Linear(2, 16), nn.GELU(), nn.Linear(16, 2 * n_out))
         nn.init.zeros_(self.size[-1].weight)
         nn.init.zeros_(self.size[-1].bias)
-        if kind in ("poly2", "poly3"):
+        if kind in ("poly2", "poly3", "gate_poly2"):
             self.U2, self.V2 = nn.Linear(K, rank), nn.Linear(K, rank)
             self.Q2 = nn.Linear(rank, n_out, bias=False)
             nn.init.zeros_(self.Q2.weight)  # start exactly at the additive model
@@ -68,8 +84,8 @@ class SetModel(nn.Module):
             nn.init.zeros_(self.psi[-1].bias)
         if kind == "deepsets":
             self.rho = mlp(K, hidden, n_out, dropout)
-        if kind == "gate":
-            self.delta = mlp(d_in, hidden, n_out, dropout)
+        if kind in ("gate", "scope_l", "scope_r", "gate_poly2", "mgate", "sgate"):
+            self.delta = mlp(d_in, hidden, 1 if kind == "sgate" else n_out, dropout)
             nn.init.zeros_(self.delta[-1].weight)  # m = 1 everywhere: starts exactly at the additive model
             nn.init.zeros_(self.delta[-1].bias)
         if kind == "settrans":
@@ -90,7 +106,15 @@ class SetModel(nn.Module):
         else:
             A = (self.phi(x) * m.unsqueeze(-1)).sum(1) / nc
             z = self.lin(A)
-            if self.kind in ("poly2", "poly3"):
+            if self.kind in ("gate", "gate_poly2", "mgate"):
+                z = z * self.factors(x, mask).prod(1)
+            if self.kind == "sgate":
+                z = (z - self.lin.bias) * self.factors(x, mask).prod(1) + self.lin.bias
+            if self.kind == "fgate":
+                z = z * torch.where(mask, x[..., -1], torch.ones_like(x[..., -1])).prod(1, keepdim=True)
+            if self.kind in ("scope_l", "scope_r"):
+                z = self.scoped(x, mask, nc)
+            if self.kind in ("poly2", "poly3", "gate_poly2"):
                 z = z + self.Q2(self.U2(A) * self.V2(A))
             if self.kind == "poly3":
                 z = z + self.Q3(self.U3(A) * self.V3(A) * self.W3(A))
@@ -98,13 +122,29 @@ class SetModel(nn.Module):
                 z = self.rho(A)
             if self.kind == "pair":
                 z = z + self.pair_term(x, mask)
-            if self.kind == "gate":
-                f = 1.0 + 2.0 * torch.tanh(self.delta(x))  # B,L,C in (-1, 3)
-                f = torch.where(mask.unsqueeze(-1), f, torch.ones_like(f))
-                z = z * f.prod(1)
         s = self.size(torch.cat([torch.log(nc), 1.0 / nc], dim=1))
         gain, bias = s[:, : self.n_out], s[:, self.n_out:]
         return torch.exp(gain) * z + bias
+
+    def factors(self, x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+        """Per-object multiplicative factor m(x) in (-1, 3); exactly 1 for absent objects.  (B, L, C)"""
+        t = 2.0 * torch.tanh(self.delta(x))
+        if self.kind == "mgate":
+            t = t * x[..., -1:]  # the last feature flags the objects allowed to act as operators
+        return torch.where(mask.unsqueeze(-1), 1.0 + t, torch.ones_like(t))
+
+    def scoped(self, x: torch.Tensor, mask: torch.Tensor, nc: torch.Tensor) -> torch.Tensor:
+        """Ordered product: object i is multiplied by the factors of the objects on one side of it."""
+        f = self.factors(x, mask)  # B,L,C
+        pos = x[..., self.pos_index]
+        if self.kind == "scope_l":
+            acts = pos.unsqueeze(1) < pos.unsqueeze(2)  # [b, i, j]: j comes before i
+        else:
+            acts = pos.unsqueeze(1) > pos.unsqueeze(2)
+        acts = acts & mask.unsqueeze(1)
+        g = torch.where(acts.unsqueeze(-1), f.unsqueeze(1), torch.ones_like(f).unsqueeze(1)).prod(2)  # B,L,C
+        c = self.phi(x) @ self.lin.weight.T  # per-object contribution, B,L,C
+        return (c * g * mask.unsqueeze(-1).float()).sum(1) / nc + self.lin.bias
 
     def pair_term(self, x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
         e = self.phi_p(x)  # B,L,kp

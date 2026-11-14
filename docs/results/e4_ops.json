@@ -1,0 +1,381 @@
+{
+ "n_words": 1317,
+ "share_mean_abs_dev_below_0p05": 0.36522399392558846,
+ "top": [
+  {
+   "word": "horrible",
+   "count": 162,
+   "mean_abs_dev": 0.3124761898891846,
+   "most_damped": {
+    "fear": -0.02123119212962954,
+    "disgust": 0.20093677662037035,
+    "disappointment": 0.22895266685956794
+   },
+   "most_amplified": {
+    "desire": 1.309191291714892,
+    "excitement": 1.2689028139467593,
+    "pride": 1.2579752604166667
+   }
+  },
+  {
+   "word": "shame",
+   "count": 132,
+   "mean_abs_dev": 0.3075143338797928,
+   "most_damped": {
+    "embarrassment": -0.16140654592803028,
+    "disappointment": 0.2005615234375,
+    "disgust": 0.3503898851799242
+   },
+   "most_amplified": {
+    "confusion": 1.3363111091382576,
+    "realization": 1.216073700875947,
+    "excitement": 1.1663494688091856
+   }
+  },
+  {
+   "word": "excited",
+   "count": 152,
+   "mean_abs_dev": 0.2862482848752262,
+   "most_damped": {
+    "excitement": -0.2671476665296053,
+    "joy": 0.6298731753700657,
+    "neutral": 0.6345407586348684
+   },
+   "most_amplified": {
+    "disapproval": 1.4609455309416117,
+    "confusion": 1.4288297954358553,
+    "remorse": 1.4256752415707237
+   }
+  },
+  {
+   "word": "disgusting",
+   "count": 143,
+   "mean_abs_dev": 0.2772422595159872,
+   "most_damped": {
+    "disgust": -0.3084776551573427,
+    "annoyance": 0.03823617788461542,
+    "embarrassment": 0.21383304195804198
+   },
+   "most_amplified": {
+    "realization": 1.5821439302884617,
+    "confusion": 1.2939555561625875,
+    "relief": 1.172974486451049
+   }
+  },
+  {
+   "word": "glad",
+   "count": 592,
+   "mean_abs_dev": 0.2764716089836189,
+   "most_damped": {
+    "relief": -0.1092166385135136,
+    "pride": 0.2692846349767737,
+    "admiration": 0.4314113307643581
+   },
+   "most_amplified": {
+    "disapproval": 1.4177126497835726,
+    "confusion": 1.4144703633076436,
+    "disappointment": 1.3860341664907094
+   }
+  },
+  {
+   "word": "awful",
+   "count": 183,
+   "mean_abs_dev": 0.26932778561329307,
+   "most_damped": {
+    "disgust": 0.058767183230874265,
+    "disapproval": 0.23108777322404372,
+    "disappointment": 0.2511419911202186
+   },
+   "most_amplified": {
+    "pride": 1.2969457073941257,
+    "desire": 1.2920702324538935,
+    "excitement": 1.2499706497609289
+   }
+  },
+  {
+   "word": "proud",
+   "count": 110,
+   "mean_abs_dev": 0.26658353000492246,
+   "most_damped": {
+    "pride": -0.23082386363636354,
+    "approval": 0.42501331676136367,
+    "relief": 0.5826904296875
+   },
+   "most_amplified": {
+    "confusion": 1.4134144176136363,
+    "disapproval": 1.3581254438920456,
+    "disappointment": 1.317196377840909
+   }
+  },
+  {
+   "word": "disappointed",
+   "count": 67,
+   "mean_abs_dev": 0.26467929694698306,
+   "most_damped": {
+    "disappointment": -0.3879722481343284,
+    "sadness": 0.3549075909514925,
+    "disapproval": 0.4188724347014925
+   },
+   "most_amplified": {
+    "desire": 1.27435302734375,
+    "excitement": 1.091817827367071,
+    "love": 1.0506067987698227
+   }
+  },
+  {
+   "word": "regret",
+   "count": 60,
+   "mean_abs_dev": 0.2632655451695124,
+   "most_damped": {
+    "remorse": 0.07535807291666663,
+    "grief": 0.28840332031250004,
+    "sadness": 0.36277669270833335
+   },
+   "most_amplified": {
+    "surprise": 1.45897216796875,
+    "excitement": 1.3459716796875,
+    "annoyance": 1.245062255859375
+   }
+  },
+  {
+   "word": "terrible",
+   "count": 239,
+   "mean_abs_dev": 0.2611408314516782,
+   "most_damped": {
+    "fear": 0.05821374869246865,
+    "disapproval": 0.29237014578974896,
+    "disappointment": 0.3177975451098326
+   },
+   "most_amplified": {
+    "desire": 1.2607140960054917,
+    "excitement": 1.234676345122908,
+    "pride": 1.1924471675601465
+   }
+  },
+  {
+   "word": "worried",
+   "count": 103,
+   "mean_abs_dev": 0.2603500582143437,
+   "most_damped": {
+    "nervousness": -0.250682645631068,
+    "fear": 0.10307474969660191,
+    "relief": 0.38069345418689315
+   },
+   "most_amplified": {
+    "approval": 1.3195836335709952,
+    "pride": 1.2335370998938107,
+    "disgust": 1.2266276831765777
+   }
+  },
+  {
+   "word": "bless",
+   "count": 66,
+   "mean_abs_dev": 0.256064393303611,
+   "most_damped": {
+    "relief": 0.3028749408143939,
+    "caring": 0.42359878077651514,
+    "approval": 0.46990411931818177
+   },
+   "most_amplified": {
+    "confusion": 1.4237874348958333,
+    "disappointment": 1.3616166548295454,
+    "disapproval": 1.2708980675899622
+   }
+  },
+  {
+   "word": "worry",
+   "count": 151,
+   "mean_abs_dev": 0.25099715424125335,
+   "most_damped": {
+    "nervousness": 0.011401852235099375,
+    "relief": 0.08403934706125826,
+    "caring": 0.18444420012417218
+   },
+   "most_amplified": {
+    "disgust": 1.239322485513245,
+    "disapproval": 1.2373831035285596,
+    "approval": 1.2326158940397351
+   }
+  },
+  {
+   "word": "wow",
+   "count": 648,
+   "mean_abs_dev": 0.24816285654560816,
+   "most_damped": {
+    "surprise": 0.09306881751543206,
+    "realization": 0.26950299298321756,
+    "excitement": 0.2760484483506944
+   },
+   "most_amplified": {
+    "confusion": 1.3548734688464505,
+    "caring": 1.3172893759645061,
+    "nervousness": 1.2093583095220872
+   }
+  },
+  {
+   "word": "sorry",
+   "count": 962,
+   "mean_abs_dev": 0.24804971630225595,
+   "most_damped": {
+    "remorse": 0.02034742073804574,
+    "sadness": 0.12385086408523904,
+    "embarrassment": 0.3501326785018192
+   },
+   "most_amplified": {
+    "desire": 1.353219966135005,
+    "excitement": 1.2863168062142671,
+    "surprise": 1.215061877720569
+   }
+  },
+  {
+   "word": "amazing",
+   "count": 396,
+   "mean_abs_dev": 0.24464388937833162,
+   "most_damped": {
+    "excitement": 0.29544098208648994,
+    "surprise": 0.478762848208649,
+    "joy": 0.5073630593039773
+   },
+   "most_amplified": {
+    "disapproval": 1.3745413115530303,
+    "caring": 1.2672563032670454,
+    "remorse": 1.2325608995225694
+   }
+  },
+  {
+   "word": "interesting",
+   "count": 338,
+   "mean_abs_dev": 0.24300230218259747,
+   "most_damped": {
+    "excitement": 0.1560318625184911,
+    "curiosity": 0.35831464959319526,
+    "surprise": 0.6264153655464126
+   },
+   "most_amplified": {
+    "disapproval": 1.4872519589034763,
+    "disappointment": 1.3704711191752958,
+    "caring": 1.2932641746024407
+   }
+  },
+  {
+   "word": "happy",
+   "count": 738,
+   "mean_abs_dev": 0.24066379717095066,
+   "most_damped": {
+    "excitement": 0.3060994135331978,
+    "admiration": 0.5357080475101625,
+    "approval": 0.6237587864159891
+   },
+   "most_amplified": {
+    "realization": 1.3003320047848916,
+    "confusion": 1.299409695757114,
+    "remorse": 1.2741735608274052
+   }
+  },
+  {
+   "word": "upset",
+   "count": 75,
+   "mean_abs_dev": 0.23971894207454866,
+   "most_damped": {
+    "disappointment": -0.20988281250000007,
+    "sadness": 0.26466796875,
+    "annoyance": 0.31899088541666665
+   },
+   "most_amplified": {
+    "desire": 1.3745052083333333,
+    "excitement": 1.206494140625,
+    "curiosity": 1.1386474609375
+   }
+  },
+  {
+   "word": "scary",
+   "count": 75,
+   "mean_abs_dev": 0.23968322174889703,
+   "most_damped": {
+    "fear": -0.16117187499999996,
+    "nervousness": 0.18024088541666672,
+    "anger": 0.5508170572916666
+   },
+   "most_amplified": {
+    "remorse": 1.367890625,
+    "desire": 1.2555094401041667,
+    "pride": 1.2080110677083333
+   }
+  },
+  {
+   "word": "lucky",
+   "count": 98,
+   "mean_abs_dev": 0.2394250023121737,
+   "most_damped": {
+    "relief": 0.2507423867984694,
+    "approval": 0.46758659518494894,
+    "admiration": 0.5967394770408163
+   },
+   "most_amplified": {
+    "confusion": 1.371001574457908,
+    "disapproval": 1.353256536989796,
+    "annoyance": 1.2725306919642856
+   }
+  },
+  {
+   "word": "shocked",
+   "count": 59,
+   "mean_abs_dev": 0.2387241584048144,
+   "most_damped": {
+    "surprise": -0.16671080508474567,
+    "fear": 0.4868743379237288,
+    "nervousness": 0.49767031912076276
+   },
+   "most_amplified": {
+    "desire": 1.4478697695974576,
+    "caring": 1.2517917439088984,
+    "remorse": 1.068686792405985
+   }
+  },
+  {
+   "word": "surprised",
+   "count": 239,
+   "mean_abs_dev": 0.23816414329724903,
+   "most_damped": {
+    "surprise": -0.18585332766736395,
+    "realization": 0.3230358427039749,
+    "excitement": 0.5466053216527197
+   },
+   "most_amplified": {
+    "caring": 1.267466269776412,
+    "disgust": 1.2668206761571652,
+    "desire": 1.2616079162853033
+   }
+  },
+  {
+   "word": "uncomfortable",
+   "count": 54,
+   "mean_abs_dev": 0.23753635530118586,
+   "most_damped": {
+    "embarrassment": 0.10648148148148151,
+    "nervousness": 0.15568033854166663,
+    "disappointment": 0.4964057074652778
+   },
+   "most_amplified": {
+    "pride": 1.2631542064525463,
+    "desire": 1.2405757197627314,
+    "surprise": 1.2234440556278936
+   }
+  },
+  {
+   "word": "curious",
+   "count": 157,
+   "mean_abs_dev": 0.23699804823218532,
+   "most_damped": {
+    "curiosity": -0.1457566182324841,
+    "surprise": 0.41266141271894907,
+    "excitement": 0.48698435011942676
+   },
+   "most_amplified": {
+    "disappointment": 1.5092866739649682,
+    "disapproval": 1.4240442749800954,
+    "caring": 1.417052833897293
+   }
+  }
+ ]
+}

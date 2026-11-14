@@ -1,0 +1,63 @@
+{
+ "rep": "tiles4",
+ "mode": "crossfit",
+ "n": {
+  "test": 17716
+ },
+ "seeds": 3,
+ "ceiling_model": null,
+ "ceiling_loss": NaN,
+ "hp": {
+  "add": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "gate": {},
+  "poly2": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  }
+ },
+ "models": {
+  "add": {
+   "loss": 1.0417945384979248,
+   "acc": 0.6298073132832845,
+   "acc_sd": 0.004483912298806194
+  },
+  "gate": {
+   "loss": 1.0988438129425049,
+   "acc": 0.6124407052993774,
+   "acc_sd": 0.0004017827155063014,
+   "vs_add": {
+    "mean": -0.05704934954278005,
+    "lo": -0.06673797827041265,
+    "hi": -0.04809346336828773,
+    "seed_sd": 0.003858696772584991,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "poly2": {
+   "loss": 1.034164309501648,
+   "acc": 0.6318205793698629,
+   "acc_sd": 0.003623206500122855,
+   "vs_add": {
+    "mean": 0.00763028113504686,
+    "lo": 0.0033603099309339243,
+    "hi": 0.011785315255444576,
+    "seed_sd": 0.002869918216015113,
+    "significant": true,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  }
+ },
+ "sec": 1360.5
+}

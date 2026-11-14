@@ -152,6 +152,58 @@ def fig_q2(tag: str) -> None:
     plt.close(fig)
 
 
+def fig_shortlist() -> None:
+    d = load("e5b_short_list.json")
+    if not d:
+        return
+    full = d["full_gate_gain"]["mean"]
+    xs = [r["k"] for r in d["lists"]] + [3000]
+    m = [100 * r["gain"]["mean"] / full for r in d["lists"]] + [100.0]
+    lo = [100 * r["gain"]["lo"] / full for r in d["lists"]] + [100 * d["full_gate_gain"]["lo"] / full]
+    hi = [100 * r["gain"]["hi"] / full for r in d["lists"]] + [100 * d["full_gate_gain"]["hi"] / full]
+    fig, ax = plt.subplots(figsize=(6.4, 3.8))
+    ax.fill_between(xs, lo, hi, color=C[0], alpha=0.15, lw=0)
+    ax.plot(xs, m, "-o", color=C[0], mec=SURFACE, mew=2, ms=8)
+    for x, v in zip(xs, m):
+        ax.text(x, v + 9, f"{v:.0f}%", ha="center", fontsize=9, color=INK2)
+    ax.set_xscale("log")
+    ax.set_xticks(xs, [str(x) for x in xs[:-1]] + ["all words"])
+    ax.minorticks_off()
+    ax.set_ylim(0, 150)
+    ax.set_xlabel("words allowed to act as operators (strongest first)")
+    ax.set_ylabel("% of the full operator gain")
+    ax.set_title("A short list gives roughly half of the operator gain")
+    fig.tight_layout()
+    fig.savefig(OUT / "operators_short_list.png", dpi=200)
+    plt.close(fig)
+
+
+def fig_onboarding() -> None:
+    d, p = load("e4c_onboarding.json"), load("e4_personal.json")
+    if not d or not p:
+        return
+    op = p["bases"]["add"]["shared"]["loss"] - p["bases"]["gate"]["shared"]["loss"]
+    xs = [r["n"] if i < len(d["curve"]) - 1 else 2700 for i, r in enumerate(d["curve"])]
+    fig, ax = plt.subplots(figsize=(6.8, 4.0))
+    names = [("lowrank", "+ personal reading of content"), ("gain", "+ personal response strength"), ("field", "personal field only")]
+    for i, (k, lab) in enumerate(names):
+        m = [r[k]["mean"] for r in d["curve"]]
+        ax.fill_between(xs, [r[k]["lo"] for r in d["curve"]], [r[k]["hi"] for r in d["curve"]], color=C[i], alpha=0.15, lw=0)
+        ax.plot(xs, m, "-o", color=C[i], mec=SURFACE, mew=1.5, ms=6, label=lab)
+    ax.axhline(op, color=INK2, lw=1, ls=(0, (4, 3)))
+    ax.text(xs[-1], op - 0.006, "gain from operators (shared model)", fontsize=9, color=INK2, ha="right", va="top")
+    ax.set_xscale("log")
+    ax.set_xticks(xs, [str(x) for x in xs[:-1]] + ["all"])
+    ax.minorticks_off()
+    ax.set_xlabel("ratings available from the person")
+    ax.set_ylabel("held-out gain, nats per rating")
+    ax.set_title("Personal couplings: what a person's own ratings buy")
+    ax.legend(loc="upper left", fontsize=9)
+    fig.tight_layout()
+    fig.savefig(OUT / "personal_onboarding.png", dpi=200)
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     import sys
 
@@ -159,4 +211,6 @@ if __name__ == "__main__":
     fig_e0()
     fig_q1()
     fig_q2(sys.argv[1] if len(sys.argv) > 1 else "test")
+    fig_shortlist()
+    fig_onboarding()
     print(sorted(p.name for p in OUT.glob("*.png")))

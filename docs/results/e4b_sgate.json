@@ -1,0 +1,280 @@
+{
+ "loss": 1.9564628601074219,
+ "gain_over_additive": {
+  "mean": 0.02962457487251352,
+  "lo": 0.023424850882410368,
+  "hi": 0.03597939622215975,
+  "seed_sd": 0.003644967390478472
+ },
+ "gain_over_per_node_gate": {
+  "mean": -0.014647646958855204,
+  "lo": -0.030247362836706218,
+  "hi": -0.001049557397480653,
+  "seed_sd": 0.015283829557917884
+ },
+ "n_words": 1317,
+ "share_within_0p1_of_one": 0.8853454821564161,
+ "share_below_half": 0.0,
+ "lowest": [
+  {
+   "word": "glad",
+   "factor": 0.5969840288162231,
+   "count": 592
+  },
+  {
+   "word": "appreciate",
+   "factor": 0.609670877456665,
+   "count": 206
+  },
+  {
+   "word": "amazing",
+   "factor": 0.6147480010986328,
+   "count": 396
+  },
+  {
+   "word": "horrible",
+   "factor": 0.6401606798171997,
+   "count": 162
+  },
+  {
+   "word": "awesome",
+   "factor": 0.6464395523071289,
+   "count": 403
+  },
+  {
+   "word": "sorry",
+   "factor": 0.6532061100006104,
+   "count": 962
+  },
+  {
+   "word": "love",
+   "factor": 0.6583929061889648,
+   "count": 2425
+  },
+  {
+   "word": "lovely",
+   "factor": 0.6598846912384033,
+   "count": 58
+  },
+  {
+   "word": "adorable",
+   "factor": 0.6601017713546753,
+   "count": 51
+  },
+  {
+   "word": "shame",
+   "factor": 0.6602033376693726,
+   "count": 132
+  },
+  {
+   "word": "hilarious",
+   "factor": 0.6698710322380066,
+   "count": 115
+  },
+  {
+   "word": "loved",
+   "factor": 0.6831850409507751,
+   "count": 181
+  },
+  {
+   "word": "scared",
+   "factor": 0.6916881799697876,
+   "count": 114
+  },
+  {
+   "word": "worry",
+   "factor": 0.6947469115257263,
+   "count": 151
+  },
+  {
+   "word": "fantastic",
+   "factor": 0.6974582076072693,
+   "count": 80
+  },
+  {
+   "word": "afraid",
+   "factor": 0.7008213996887207,
+   "count": 117
+  },
+  {
+   "word": "funny",
+   "factor": 0.7043399810791016,
+   "count": 372
+  },
+  {
+   "word": "wow",
+   "factor": 0.7161008715629578,
+   "count": 648
+  },
+  {
+   "word": "hahaha",
+   "factor": 0.7172975540161133,
+   "count": 95
+  },
+  {
+   "word": "disappointed",
+   "factor": 0.7188457250595093,
+   "count": 67
+  },
+  {
+   "word": "hate",
+   "factor": 0.7189826369285583,
+   "count": 570
+  },
+  {
+   "word": "beautiful",
+   "factor": 0.7281155586242676,
+   "count": 251
+  },
+  {
+   "word": "interesting",
+   "factor": 0.7283672094345093,
+   "count": 338
+  },
+  {
+   "word": "happy",
+   "factor": 0.7290493249893188,
+   "count": 738
+  },
+  {
+   "word": "wonderful",
+   "factor": 0.7305173873901367,
+   "count": 92
+  },
+  {
+   "word": "loving",
+   "factor": 0.7311478853225708,
+   "count": 63
+  },
+  {
+   "word": "laughed",
+   "factor": 0.7316193580627441,
+   "count": 67
+  },
+  {
+   "word": "enjoy",
+   "factor": 0.7320613265037537,
+   "count": 263
+  },
+  {
+   "word": "wonder",
+   "factor": 0.7323784828186035,
+   "count": 200
+  },
+  {
+   "word": "lol",
+   "factor": 0.7363286018371582,
+   "count": 1479
+  }
+ ],
+ "highest": [
+  {
+   "word": "figure",
+   "factor": 1.063349962234497,
+   "count": 85
+  },
+  {
+   "word": "star",
+   "factor": 1.0570944547653198,
+   "count": 66
+  },
+  {
+   "word": "term",
+   "factor": 1.053845763206482,
+   "count": 78
+  },
+  {
+   "word": "double",
+   "factor": 1.052694320678711,
+   "count": 71
+  },
+  {
+   "word": "extra",
+   "factor": 1.0518373250961304,
+   "count": 67
+  },
+  {
+   "word": "multiple",
+   "factor": 1.0513395071029663,
+   "count": 63
+  },
+  {
+   "word": "report",
+   "factor": 1.0511435270309448,
+   "count": 66
+  },
+  {
+   "word": "consider",
+   "factor": 1.0503236055374146,
+   "count": 61
+  },
+  {
+   "word": "sign",
+   "factor": 1.048233985900879,
+   "count": 98
+  },
+  {
+   "word": "that",
+   "factor": 1.0480151176452637,
+   "count": 12924
+  },
+  {
+   "word": "pro",
+   "factor": 1.0479220151901245,
+   "count": 62
+  },
+  {
+   "word": "contract",
+   "factor": 1.0471056699752808,
+   "count": 58
+  },
+  {
+   "word": "list",
+   "factor": 1.0469192266464233,
+   "count": 81
+  },
+  {
+   "word": "characters",
+   "factor": 1.0467920303344727,
+   "count": 60
+  },
+  {
+   "word": "thing",
+   "factor": 1.0466657876968384,
+   "count": 943
+  },
+  {
+   "word": "group",
+   "factor": 1.0465091466903687,
+   "count": 98
+  },
+  {
+   "word": "add",
+   "factor": 1.0460460186004639,
+   "count": 88
+  },
+  {
+   "word": "spot",
+   "factor": 1.0456862449645996,
+   "count": 53
+  },
+  {
+   "word": "each",
+   "factor": 1.0454809665679932,
+   "count": 161
+  },
+  {
+   "word": "current",
+   "factor": 1.045219898223877,
+   "count": 55
+  }
+ ],
+ "treebank_agreement": {
+  "n_shared_words": 691,
+  "pearson": 0.3880797740910499,
+  "spearman": 0.425665460018207,
+  "overlap_of_20_lowest": [
+   "hate"
+  ]
+ }
+}
