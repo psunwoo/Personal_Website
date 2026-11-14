@@ -112,7 +112,7 @@ Factors learned on the treebank (movie-review sentiment) are frozen and applied 
 | Images, concept tags, emotion | CE 0.887 | −0.0137 [−0.0202, −0.0074] | +0.0028 [−0.0016, +0.0078] |
 
 - **Operators are a valence phenomenon in language.** Arousal and dominance show none. Concreteness has a second-order effect that is *not* operator-like: it is carried by the pair ("logic bomb", "bad egg"), i.e. by lexicalised compounds.
-- **Images show none.** The gated model is worse than the additive one on isolated tiles and on concept tags; no image element was found that acts on the rest.
+- **Images show none.** The gated model is worse than the additive one on isolated tiles and on concept tags; no image element was found that acts on the rest. A confirmatory run on the official split with 31,494 training images gives the same answer (`RESULTS.md`, section 3.5).
 
 ## 6. Categorical emotions: a different multiplicative effect
 

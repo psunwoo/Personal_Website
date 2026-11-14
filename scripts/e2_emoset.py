@@ -79,7 +79,18 @@ def main() -> None:
         return
     lock.touch()
     splits = ["train", "val", "test"] if args.holdout else args.splits.split(",")
-    feats = {s: emoset.load(s) for s in splits}
+    # load only the arrays this run needs (all of them together are several GB per process)
+    need = {"label", "image_id"}
+    for rep in [args.rep] + [r for r in args.refs.split(",") if r]:
+        if rep.startswith("tiles"):
+            need.add(f"d{rep[-1]}")
+        elif rep.startswith("whole_"):
+            need.add(rep.split("_")[1])
+        elif rep.startswith("tags"):
+            need.add("clip")
+        elif rep == "attrs":
+            need |= {"brightness", "colorfulness", "facial_expression", "human_action", "scene", "object"}
+    feats = {s: emoset.load(s, keys=sorted(need)) for s in splits}
     if args.holdout and args.max_train:
         idx = np.random.default_rng(0).permutation(len(feats["train"]["label"]))[: args.max_train]
         feats["train"] = {k: v[idx] for k, v in feats["train"].items()}

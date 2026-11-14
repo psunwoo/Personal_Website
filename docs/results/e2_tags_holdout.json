@@ -1,0 +1,76 @@
+{
+ "rep": "tags",
+ "mode": "holdout",
+ "n": {
+  "train": 31494,
+  "val": 5905,
+  "test": 17716
+ },
+ "seeds": 3,
+ "ceiling_model": null,
+ "ceiling_loss": NaN,
+ "hp": {
+  "add": {},
+  "poly2": {},
+  "gate": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "deepsets": {}
+ },
+ "models": {
+  "add": {
+   "loss": 0.8328356146812439,
+   "acc": 0.6969970648001805,
+   "acc_sd": 0.0005587883798042222
+  },
+  "poly2": {
+   "loss": 0.8397980332374573,
+   "acc": 0.6942876495822986,
+   "acc_sd": 0.0057896986393511304,
+   "vs_add": {
+    "mean": -0.006962437568666424,
+    "lo": -0.02326492737278858,
+    "hi": 0.004800440204788802,
+    "seed_sd": 0.01614207884840905,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "gate": {
+   "loss": 0.8532425761222839,
+   "acc": 0.6901294498381877,
+   "acc_sd": 0.004268397362368986,
+   "vs_add": {
+    "mean": -0.02040699437232429,
+    "lo": -0.032837166405249134,
+    "hi": -0.009657762478828725,
+    "seed_sd": 0.011292320546998238,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "deepsets": {
+   "loss": 0.8392031192779541,
+   "acc": 0.6963949725295402,
+   "acc_sd": 0.002081801232170334,
+   "vs_add": {
+    "mean": -0.006367573601141852,
+    "lo": -0.01546228496857887,
+    "hi": 0.002194695840083891,
+    "seed_sd": 0.008028513000395277,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  }
+ },
+ "sec": 1381.2
+}

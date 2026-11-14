@@ -1,0 +1,86 @@
+{
+ "rep": "tiles4",
+ "mode": "holdout",
+ "n": {
+  "train": 31494,
+  "val": 5905,
+  "test": 17716
+ },
+ "seeds": 3,
+ "ceiling_model": null,
+ "ceiling_loss": NaN,
+ "hp": {
+  "add": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "poly2": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  },
+  "gate": {},
+  "deepsets": {
+   "K": 128,
+   "hidden": 256,
+   "wd": 0.01,
+   "dropout": 0.1
+  }
+ },
+ "models": {
+  "add": {
+   "loss": 0.9559175968170166,
+   "acc": 0.6580115902762098,
+   "acc_sd": 0.0025703494184916424
+  },
+  "poly2": {
+   "loss": 0.9461042284965515,
+   "acc": 0.6584443440957327,
+   "acc_sd": 0.00393047911224087,
+   "vs_add": {
+    "mean": 0.00981336411665453,
+    "lo": 0.006155513430450514,
+    "hi": 0.013631198286114586,
+    "seed_sd": 0.002992788182260855,
+    "significant": true,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "gate": {
+   "loss": 0.9949246048927307,
+   "acc": 0.6420373297207796,
+   "acc_sd": 0.0007055141589242422,
+   "vs_add": {
+    "mean": -0.03900705102375479,
+    "lo": -0.051963256283542446,
+    "hi": -0.02760162980033788,
+    "seed_sd": 0.011236710931788818,
+    "significant": false,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  },
+  "deepsets": {
+   "loss": 0.9450702667236328,
+   "acc": 0.6606269285768044,
+   "acc_sd": 0.0023137567062393736,
+   "vs_add": {
+    "mean": 0.010847350314959875,
+    "lo": 0.0045111821701717255,
+    "hi": 0.017242477683546188,
+    "seed_sd": 0.0019168017324695983,
+    "significant": true,
+    "headroom": NaN,
+    "share_of_headroom": NaN,
+    "passed": false
+   }
+  }
+ },
+ "sec": 1234.6
+}

@@ -194,6 +194,17 @@ Positive $\Delta$ means better than additive. The explicit pair model was run fo
 - The whole-image encoder beats every set model on isolated tiles. That gap cannot be closed by interactions among tile summaries; it is information lost when a tile is embedded alone (objects and faces cut by a border, lower effective context).
 - Tiles are not objects. This test says affect is nearly additive over *image regions*, not over *things*. The object-level test still needs Affection ∩ Visual Genome.
 
+**Confirmatory run on the official split** (added 2026-11-14): 31,494 training images, 5,905 validation, the same 17,716 test images, three seeds. Whole-image DINOv2 ceiling: cross-entropy 0.692, accuracy 74.6%.
+
+| objects | additive: loss (accuracy) | $\Delta_2$, ACE degree 2 | Deep Sets | gated additive | $\Delta_2$ as % of headroom |
+|---|---|---|---|---|---|
+| 2×2 tiles | 0.738 (73.5%) | −0.0003 [−0.0028, +0.0022] | −0.0025 [−0.0118, +0.0047] | −0.0214 [−0.0276, −0.0157] | −0.7% |
+| 3×3 tiles | 0.853 (69.0%) | +0.0003 [−0.0074, +0.0068] | +0.0046 [−0.0028, +0.0115] | −0.0267 [−0.0398, −0.0134] | 0.2% |
+| 4×4 tiles | 0.956 (65.8%) | +0.0098 [+0.0062, +0.0136] | +0.0108 [+0.0045, +0.0172] | −0.0390 [−0.0520, −0.0276] | 3.7% |
+| 8 concept tags | 0.833 (69.7%) | −0.0070 [−0.0233, +0.0048] | −0.0064 [−0.0155, +0.0022] | −0.0204 [−0.0328, −0.0097] | −4.9% |
+
+With more than twice the training data per model the picture is unchanged: null at 2×2, 3×3 and for tags; a small significant gain at 4×4 that stays far below the pass threshold; and no operator structure.
+
 ## 4. Q2 in detail
 
 Linear version of RSMI: canonical correlation between a tile's embedding and its environment (the surrounding tiles), fitted on 14,468 images, re-measured on 6,201 held-out images. In the linear-Gaussian case the ordered canonical directions are the information-bottleneck solution, and $\rho_k^2$ is the relevance spectrum.
@@ -249,13 +260,13 @@ Neither stop nor continue as planned.
 - The neural additive model under-fits low-dimensional norm inputs (gradient boosting is 6–8 points better). The neural "norms only" run in `docs/results/e1_vad_norms_rated.json` therefore overstates the interaction and is not used above.
 - NRC reliability figures are for the whole lexicon, not the two-word subset.
 - Treebank: three seeds, default hyper-parameters selected, lenient ceiling.
-- Images: 15% of EmoSet, single label per image, tiles instead of objects, ceiling defined by a model rather than by annotator noise.
+- Images: the cross-fitted runs use 15% of EmoSet and the confirmatory runs 47%; single label per image, tiles instead of objects, ceiling defined by a model rather than by annotator noise.
 - Q2 is a linear approximation on encoder features with three scales.
 - EmoSet was taken from a third-party Hugging Face mirror (`Woleek/EmoSet-118K`); its licence is unconfirmed. NRC VAD is for non-commercial research only.
 
 ## 8. Needed next
 
 1. Request Affection (and optionally EMOTIC, also form-gated and non-commercial); both give object-level tests.
-2. A GPU, or about six more CPU-hours, to extract the remaining 100K EmoSet images for a confirmatory fixed-split run.
+2. Done in part on 2026-11-14: a confirmatory fixed-split run with 31,494 training images (section 3.5). The remaining 63K images would need about three more CPU-hours and are unlikely to change the conclusion.
 3. A decision on the operator/particle follow-up in section 6.
 4. Persistent storage: cached features (about 0.5 GB so far) live only in this container; everything is reproducible from the scripts.
