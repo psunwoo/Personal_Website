@@ -25,7 +25,8 @@ $$z=\Big[\prod_j m(x_j)\Big]\,\frac1N\sum_i W\phi(x_i),\qquad m(x)=1+2\tanh\delt
 - On the same scale, operators gain +0.032. **Personalisation is six to seven times larger than the best combination rule.**
 - Most of it is the field (84%), which does not depend on content. The content-dependent personal part is +0.035, about the size of the operator effect.
 - A new person, fitted from scratch with a prior learned from other people: 10 ratings gain +0.065, 20 gain +0.105, 50 gain +0.157.
-- Rater fields are not low-dimensional (about 9 effective dimensions of 28), but an 8-dimensional user space is ahead of the full field in point estimate when a person has 20 ratings or fewer.
+- Rater fields are not low-dimensional in GoEmotions (about 9 effective dimensions of 28), but an 8-dimensional user space is ahead of the full field in point estimate when a person has 20 ratings or fewer.
+- A second dataset with 7,912 people and about 17 ratings each confirms the pattern with tight intervals: a prior learned from other people makes even one rating useful, a prior that links the concept nodes is better still, and personal fields are small for plain sentiment and large for interpretive judgements.
 
 Two numbers reported after the first version of this pass were wrong and are corrected here: the personal layers had been over-regularised, which understated the field (+0.127) and overstated the content readout (+0.060); and the reliability of per-rater operator strength is not robust (0.79 with per-node factors, 0.40 with scalar factors).
 
@@ -189,10 +190,30 @@ Caveats specific to this section:
 - That annotators differ systematically, and that modelling each annotator on a shared representation helps, is established (Davani et al., TACL 2022; verified in `PRIOR_ART.md`, section 2b). What is specific here is the size relative to combination rules and the cold-start curve.
 - An earlier naive onboarding curve (`e4c_onboarding.json`: plain gradient descent with a fixed penalty and a personal validation set) is superseded by the cold-start table and understates small-$n$ gains.
 
+### 7b. Second dataset: many people, few ratings each
+
+Measuring Hate Speech (CC-BY-4.0): 135,556 ratings of 39,565 comments by 7,912 annotators, median 17 ratings each, on ten ordinal survey items used here as ten concept nodes. Only annotator ids are used. 2,347 annotators are held out as new people. The shared model is a cross-fitted ridge regression from a sentence embedding ($R^2$ 0.36), or that plus the shrunk mean residual of the other people who rated the same comment ($R^2$ 0.53). The personal layer is a field $b_u$; in this linear-Gaussian setting its cold-start estimate is closed-form, $\hat b_u = \Sigma_b(\Sigma_b+\Sigma_\varepsilon/n)^{-1}\bar r_u$, with both covariances estimated on the other 5,565 people.
+
+Gain in mean squared error, in units of label variance, on the new person's remaining ratings (stronger shared model, "+crowd"):
+
+| ratings from the new person | no prior (raw mean) | independent prior per node | prior with covariance between nodes | covariance over independent |
+|---|---|---|---|---|
+| 1 | −0.369 | +0.0073 [+0.0063, +0.0083] | +0.0118 [+0.0104, +0.0130] | +0.0045 [+0.0038, +0.0052] |
+| 2 | −0.154 | +0.0127 [+0.0114, +0.0140] | +0.0180 [+0.0163, +0.0197] | +0.0053 [+0.0046, +0.0060] |
+| 4 | −0.047 | +0.0212 [+0.0195, +0.0227] | +0.0263 [+0.0243, +0.0282] | +0.0051 [+0.0044, +0.0058] |
+| 8 | +0.005 | +0.0305 [+0.0286, +0.0326] | +0.0346 [+0.0322, +0.0369] | +0.0040 [+0.0034, +0.0047] |
+| 12 | +0.022 | +0.0357 [+0.0330, +0.0385] | +0.0395 [+0.0365, +0.0427] | +0.0037 [+0.0030, +0.0045] |
+
+- **Personalisation from very few ratings works only with a prior.** Without one, the first ratings hurt badly; with one, a single rating already helps.
+- **A user space helps here, significantly.** Letting the prior link the nodes gains 60% more than independent shrinkage at one rating and 10% more at twelve. The between-person covariance has about 3.6 effective dimensions of 10 (top direction 46%), so here people do fall on a few axes. Rank 4 is nearly as good as the full covariance; rank 1 is not.
+- **Size.** Fields have standard deviation 0.08–0.39 across people against 0.6–0.8 of rating noise within a person. The most a perfectly known field could gain is about 0.05 of label variance (8% of what the weaker shared model leaves unexplained); twelve ratings reach about three quarters of that. This is a smaller effect than in GoEmotions.
+- **Which nodes are personal.** Fields are smallest for sentiment and respect (0.08–0.10) and largest for dehumanize (0.39), status, violence and genocide (0.26–0.28). People agree on how positive a comment is and differ on the interpretive judgements.
+- The same finding with the weaker shared model: +0.0091 at one rating and +0.0358 at twelve with the covariance prior.
+
 ## 8. What this means for the engine
 
 1. **Personalise first.** Per-user couplings are worth six to seven times more than any combination rule tested, and the simplest form (a per-user field, one number per concept node) delivers 84% of it. This is the strongest quantitative support so far for the decision to make the grammar personal.
-2. **Onboarding cost is low.** Ten reactions from a new person, with a prior learned from other people, already beat the best shared model by twice the operator gain. A low-dimensional user space is worth having only for the first twenty or so reactions.
+2. **Onboarding cost is low, given a prior.** Ten reactions from a new person, with a prior learned from other people, already beat the best shared model by twice the operator gain. Without a prior the first reactions make predictions worse. A user-space prior (covariance between concept nodes) is worth having for the first twenty or so reactions.
 3. **What is personal is mostly the baseline.** The field does not depend on content. How content is read differs between people by about as much as operators matter. In this dataset the field may largely be label-use style; whether it reflects felt differences can only be settled with reactions from real users of the engine.
 4. **Combination rule.** Combine concepts additively, then apply one-body multiplicative factors acting forward. For valence a short list of about ten negators gives roughly half of the available gain and can be built once and reused; a generic pair term adds nothing.
 5. **Do not over-generalise the list.** It is specific to valence; for categorical emotions the multiplicative effect is saturation by emotion words; for arousal, dominance, concreteness and image regions there is none.
@@ -212,4 +233,4 @@ Caveats specific to this section:
 1. Affection ∩ Visual Genome (and EMOTIC): still the only route to an object-level image test, and Affection may also carry annotator identities for a second personalisation test (unconfirmed). Both need your access request.
 2. A dedicated repository: I cannot create one from this session. Everything is on branch `claude/ml-beyond-llm-spike-7eblny` of `Personal_Website`.
 3. Whether a personal field is feeling or label use: needs reactions from real users, ideally with a design that fixes the response format.
-4. Personalisation has been tested on one dataset only.
+4. Personalisation has been tested on two annotation datasets, neither of them users reacting to rendered concepts.

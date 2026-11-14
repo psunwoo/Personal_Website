@@ -46,6 +46,8 @@ Checked 2026-11-13 by web search. Status reflects what the search results showed
 | Demszky et al., "GoEmotions: A Dataset of Fine-Grained Emotions", ACL 2020, pp. 4040–4054 (arXiv 2005.00547) | OK | 58k Reddit comments, 27 emotions plus neutral. Rater details were not in the search results; the counts in RESULTS_2.md come from the released raw file itself. |
 | Davani, Díaz, Prabhakaran, "Dealing with Disagreements: Looking Beyond the Majority Vote in Subjective Annotations", TACL 10:92–110 (2022) | OK | Trains one prediction head per annotator on a shared representation and finds it matches or beats majority-vote training. Per-annotator modelling on a shared model is therefore established; our per-rater field is a minimal instance of it, and the cold-start measurement is the part aimed at the venture. |
 
+Data added in the second pass: GoEmotions raw annotations (Apache-2.0 per its Hugging Face card) and Measuring Hate Speech (CC-BY-4.0 per its Hugging Face card; the card points to arXiv 2009.10277, which I have not read).
+
 ## 3. Candidate data
 
 | Dataset | Status | Size and content | Access and licence |

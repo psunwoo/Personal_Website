@@ -23,6 +23,7 @@ scripts/        e0_synthetic.py  e1_lexical.py  e1_norms_gbm.py  e1c_sst.py  e1c
                 extract_emoset.py  e2_emoset.py  e3_rg.py  make_tables.py  make_figures.py
                 e4_goemotions.py  e4b_sgate.py  e4_ops.py  e4_personal.py  e4c_onboarding.py
                 e4d_userspace.py  e4e_joint.py   emotions, per-rater couplings, cold start, joint training
+                e6_mhs.py   per-user fields on a second dataset (7,912 annotators)
                 e5_operators.py  e5b_short_list.py   operator sparsity and transfer
 tests/          unit tests, including recovery of a planted interaction
 docs/results/   JSON outputs and figures
@@ -47,6 +48,7 @@ The language and image runs need data under `data/raw/` (not committed):
 | Stanford Sentiment Treebank | Hugging Face `stanfordnlp/sst`, branch `refs/convert/parquet` | to `data/raw/sst/` |
 | EmoSet-118K | Hugging Face `Woleek/EmoSet-118K` (third-party mirror) | streamed by `scripts/extract_emoset.py` |
 | GoEmotions (raw, with rater ids) | Hugging Face `google-research-datasets/go_emotions`, `raw/` | Apache-2.0; to `data/raw/goemotions/raw.parquet` |
+| Measuring Hate Speech | Hugging Face `ucberkeley-dlab/measuring-hate-speech` | CC-BY-4.0; to `data/raw/mhs/mhs.parquet`; only annotator ids are used |
 
 Everything ran on 4 CPU cores. Hosts that must be reachable are listed in `docs/RESULTS.md` section 2 and in the
 cloud environment `relational-concept-flow`.
